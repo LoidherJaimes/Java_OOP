@@ -1,4 +1,9 @@
+package clinica_vet.app;
+
 import clinica_vet.model.repositories.IRolRepository;
+import clinica_vet.model.repositories.IRolService;
+import clinica_vet.model.repositories.RolRepository;
+import clinica_vet.model.repositories.RolService;
 
 public class App {
     public static void main(String[] args) throws Exception {
