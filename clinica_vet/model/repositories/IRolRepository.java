@@ -1,0 +1,10 @@
+package clinica_vet.model.repositories;
+
+import clinica_vet.model.entities.Rol;
+
+public interface IRolRepository {
+    void addRol(Rol rol);
+        void editRol(Rol rol);
+        int getId();
+    
+}

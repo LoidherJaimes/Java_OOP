@@ -2,11 +2,11 @@ package clinica_vet.model.repositories;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.entities.Usuario;
+import clinica_vet.model.entities.User;
 
 public class UsuarioRepository implements IUsuarioRepository {
 
-    List<Usuario> listadoUsuario;
+    List<User> listadoUsuario;
 
     public UsuarioRepository(){
         listadoUsuario = new ArrayList<>();
@@ -14,13 +14,13 @@ public class UsuarioRepository implements IUsuarioRepository {
     
 
     @Override
-    public void addUser(Usuario user) {
+    public void addUser(User user) {
 
         listadoUsuario.add(user);
     }
 
     @Override
-    public Usuario getUser(String email) {
+    public User getUser(String email) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getUser'");
     }

@@ -1,9 +1,10 @@
 package clinica_vet.app;
-
+import clinica_vet.views.*;
 import clinica_vet.model.repositories.IRolRepository;
 import clinica_vet.model.repositories.IRolService;
 import clinica_vet.model.repositories.RolRepository;
 import clinica_vet.model.repositories.RolService;
+
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -12,6 +13,8 @@ public class App {
         rolService.addRol("Administrador");
         rolService.addRol("Auxiliar");
         rolService.addRol("Medico");
+        loginView login = new loginView();
+        login.setVisible(true);
 
     }
 }
