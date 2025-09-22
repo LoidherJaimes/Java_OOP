@@ -1,6 +1,7 @@
 package clinica_vet.app;
 
 import clinica_vet.views.loginView;
+import clinica_vet.model.entities.Rol;
 import clinica_vet.model.entities.User;
 import clinica_vet.model.repositories.IRolRepository;
 import clinica_vet.model.repositories.IRolService;
@@ -19,17 +20,21 @@ public class App {
         rolService.addRol("Medico");
 
         // Crear usuarios
-        User pedro = new User(1, "pedro", "1234");
+        User pedro = new User(1, "pedro", "1234", "Administrador");
         UserRepository userRepository = new UserRepository();
         userRepository.addUser(pedro);
 
         // Crear vista
         loginView login = new loginView();
 
-        // Conectar vista con controlador ✅
+        // Conectar vista con controlador 
         LoginController loginController = new LoginController(login, userRepository);
 
         // Mostrar ventana
         login.setVisible(true);
+
+        // 
+        
+        
     }
 }
