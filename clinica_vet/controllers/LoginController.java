@@ -27,10 +27,10 @@ public class LoginController {
 
             if (encontrado) {
                 JOptionPane.showMessageDialog(null, " Login exitoso");
-                System.out.println("Login exitoso");   // consola
+                
             } else {
                 JOptionPane.showMessageDialog(null, " Login fallido");
-                System.out.println("Login fallido");   // consola
+                
             }
         });
 
