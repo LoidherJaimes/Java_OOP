@@ -25,6 +25,6 @@ public class Rol {
     }
 
     public void setName(String name) {
-        this.name= name;
+        this.name = name;
     }
 }

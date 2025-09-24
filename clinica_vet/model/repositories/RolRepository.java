@@ -1,9 +1,8 @@
 package clinica_vet.model.repositories;
 
+import clinica_vet.model.entities.Rol;
 import java.util.ArrayList;
 import java.util.List;
-
-import clinica_vet.model.entities.Rol;
 
 public class RolRepository implements IRolRepository {
 
