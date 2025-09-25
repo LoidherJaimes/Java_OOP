@@ -3,13 +3,21 @@ package clinica_vet.views;
 import java.awt.*;
 import javax.swing.*;
 
-public class MainWindowView extends JFrame{
+public class MainWindowView extends JFrame {
     private JPanel contentView;
     private JPanel topBar;
     private JPanel sideMenu;
 
-    public void mainView(){
-        //creamos la ventana principal
+    // Botones accesibles desde el controlador
+    private JButton btnPerfil;
+    private JButton btnLogout;
+    private JButton btnUsers;
+    private JButton btnAppointment;
+    private JButton btnHistory;
+    private JButton btnPayments;
+
+    public void mainView() {
+        // creamos la ventana principal
         setTitle("Clinica Vet");
         setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -23,29 +31,27 @@ public class MainWindowView extends JFrame{
         add(topBar, BorderLayout.NORTH);
         add(contentView, BorderLayout.CENTER);
         add(sideMenu, BorderLayout.WEST);
-        
+
         setVisible(true);
     }
 
-    public void createTopBar(){
+    public void createTopBar() {
         topBar = new JPanel();
-
         topBar.setLayout(new BorderLayout());
         topBar.setBackground(Color.LIGHT_GRAY);
 
         // Botón perfil (izquierda)
-        JButton btnPerfil = new JButton("Perfil");
+        btnPerfil = new JButton("Perfil");
 
         // Botón cerrar sesión (derecha)
-        JButton btnLogout = new JButton("Cerrar sesión");
+        btnLogout = new JButton("Cerrar sesión");
 
         topBar.add(btnPerfil, BorderLayout.WEST);
         topBar.add(btnLogout, BorderLayout.EAST);
     }
 
-    public void createContentView(){
+    public void createContentView() {
         contentView = new JPanel();
-        
         contentView.setLayout(new BorderLayout());
         contentView.setBackground(Color.WHITE);
 
@@ -54,21 +60,28 @@ public class MainWindowView extends JFrame{
         contentView.add(lblBienvenida, BorderLayout.CENTER);
     }
 
-    public void createSideMenu(){
+    public void createSideMenu() {
         sideMenu = new JPanel();
-        
         sideMenu.setLayout(new GridLayout(0, 1)); // Vertical
         sideMenu.setBackground(Color.DARK_GRAY);
 
-        // Ejemplo de botones
-        JButton btnUsers = new JButton("Gestión de Usuarios");
-        JButton btnAppointment = new JButton("Agendar Citas");
-        JButton btnHistory = new JButton("Historia Clínica");
-        JButton btnPayments = new JButton("Facturación y Pagos");
+        // Botones del menú
+        btnUsers = new JButton("Gestión de Usuarios");
+        btnAppointment = new JButton("Agendar Citas");
+        btnHistory = new JButton("Historia Clínica");
+        btnPayments = new JButton("Facturación y Pagos");
 
         sideMenu.add(btnUsers);
         sideMenu.add(btnAppointment);
         sideMenu.add(btnHistory);
         sideMenu.add(btnPayments);
     }
+
+    // Getters para los botones
+    public JButton getBtnProfile() { return btnPerfil; }
+    public JButton getBtnLogout() { return btnLogout; }
+    public JButton getBtnUsers() { return btnUsers; }
+    public JButton getBtnAppointment() { return btnAppointment; }
+    public JButton getBtnHistory() { return btnHistory; }
+    public JButton getBtnPayments() { return btnPayments; }
 }

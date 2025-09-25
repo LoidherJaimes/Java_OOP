@@ -1,23 +1,25 @@
 package clinica_vet.controllers;
 
 import clinica_vet.model.entities.User;
+import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.views.MainWindowView;
-import javax.swing.JOptionPane;
+import clinica_vet.views.ManageUsersView;
+import clinica_vet.views.LoginView;
+import clinica_vet.views.ProfileView;
 
-public class MainWindowController{
+import javax.swing.JOptionPane;
+import java.util.List;
+
+public class MainWindowController {
 
     private MainWindowView mainView;
-    private User loggedUser;
+    private UserRepository userRepository;
 
-    public MainWindowController(MainWindowView MainWindowView, User user) {
+    public MainWindowController(MainWindowView mainView, User user, UserRepository userRepository) {
+        this.mainView = mainView;
+        this.userRepository = userRepository;
 
-        // Listener del botón Perfil
-        this.mainView.getBtnProfile().addActionListener(e -> {
-            ProfileView profileView = new ProfileView(loggedUser);
-            profileView.setVisible(true);
-        });
-
-        // Listener del botón Logout
+        // Listener Logout
         this.mainView.getBtnLogout().addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(
                 mainView,
@@ -31,6 +33,24 @@ public class MainWindowController{
                 LoginView loginView = new LoginView();
                 loginView.setVisible(true);
             }
+        });
+
+        // Listener Gestión de Usuarios
+        this.mainView.getBtnUsers().addActionListener(e -> {
+            ManageUsersView manageUsersView = new ManageUsersView();
+
+            // Limpiamos tabla antes de llenar
+            manageUsersView.clearTable();
+
+            // Obtenemos usuarios del repositorio
+            List<User> listadoUsuarios = userRepository.getAllUsers();
+
+            // Añadimos cada usuario a la tabla
+            for (User u : listadoUsuarios) {
+                manageUsersView.addUserToTable(u.getId(), u.getUsername(), u.getPassword(), u.getRol());
+            }
+
+            manageUsersView.setVisible(true);
         });
     }
 }

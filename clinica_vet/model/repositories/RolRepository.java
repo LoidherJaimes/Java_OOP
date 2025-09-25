@@ -26,5 +26,11 @@ public class RolRepository implements IRolRepository {
     public void editRol(Rol rol) {
         
     }
+@Override
+public List<Rol> getAllRoles() {
+    List<Rol> roles = null;
+    return roles; // <- devuelve la lista interna de roles
+}
+
 
 }

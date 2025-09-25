@@ -18,7 +18,7 @@ public class App {
         rolService.addRol("Administrador");
         rolService.addRol("Auxiliar");
         rolService.addRol("Medico");
-
+        
         // Crear usuarios
         Rol rolAdmin = rolService.getRolByName("Administrador");
         User admin = new User(1, "pedro", "1234", rolAdmin);

@@ -21,13 +21,13 @@ public class RolService implements IRolService {
     @Override
     public void editRol(int id, String nuevoNombre) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'editRol'");
+       
     }
-
     @Override
     public Rol getRolByName(String nombre) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRolByName'");
+        return null;
     }
+
 
 }

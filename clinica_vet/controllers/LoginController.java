@@ -29,7 +29,7 @@ public class LoginController {
                 JOptionPane.showMessageDialog(null, " Login exitoso");
                 vista.dispose();
                 MainWindowView mainView = new MainWindowView();
-                MainWindowController mainController = new MainWindowController(mainView, loginUser);
+                MainWindowController MainController = new MainWindowController(mainView, loginUser, userRepository);
                 mainView.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, " Login fallido");
