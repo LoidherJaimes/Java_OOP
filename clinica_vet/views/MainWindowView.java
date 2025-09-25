@@ -16,8 +16,8 @@ public class MainWindowView extends JFrame {
     private JButton btnHistory;
     private JButton btnPayments;
 
-    public void mainView() {
-        // creamos la ventana principal
+    // ✅ Constructor: arma la ventana directamente
+    public MainWindowView() {
         setTitle("Clinica Vet");
         setSize(900, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,8 +31,6 @@ public class MainWindowView extends JFrame {
         add(topBar, BorderLayout.NORTH);
         add(contentView, BorderLayout.CENTER);
         add(sideMenu, BorderLayout.WEST);
-
-        setVisible(true);
     }
 
     public void createTopBar() {

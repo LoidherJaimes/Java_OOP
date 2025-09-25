@@ -5,8 +5,8 @@ import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.views.CreateUserView;
 import clinica_vet.views.LoginView;
 import clinica_vet.views.MainWindowView;
+import javax.swing.*;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 public class LoginController {
 
@@ -26,18 +26,19 @@ public class LoginController {
             }
 
             if (loginUser != null) {
-                JOptionPane.showMessageDialog(null, " Login exitoso");
+                JOptionPane.showMessageDialog(null, "Login exitoso");
                 vista.dispose();
+
+                // ✅ Abrir la ventana principal directamente
                 MainWindowView mainView = new MainWindowView();
-                MainWindowController MainController = new MainWindowController(mainView, loginUser, userRepository);
+                MainWindowController mainController = new MainWindowController(mainView, loginUser, userRepository);
                 mainView.setVisible(true);
             } else {
-                JOptionPane.showMessageDialog(null, " Login fallido");
-                
+                JOptionPane.showMessageDialog(null, "Login fallido");
             }
         });
 
-        // Listener del botón Crear Usuario (fuera del login)
+        // Listener del botón Crear Usuario
         vista.getBtnCreateUser().addActionListener(ev -> {
             CreateUserView createUserView = new CreateUserView();
             createUserView.setVisible(true);
