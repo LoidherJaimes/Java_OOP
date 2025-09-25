@@ -3,7 +3,7 @@ package clinica_vet.controllers;
 import clinica_vet.views.CreateUserView;
 import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.model.entities.User;
-import clinica_vet.views.loginView;
+import clinica_vet.views.LoginView;
 
 import javax.swing.*;
 import java.util.List;
@@ -12,9 +12,9 @@ public class CreateUserController {
 
     private CreateUserView createUserView;
     private UserRepository UserRepository;
-    private loginView loginView;
+    private LoginView loginView;
 
-    public CreateUserController(CreateUserView createUserView, UserRepository userRepository, loginView loginView) {
+    public CreateUserController(CreateUserView createUserView, UserRepository userRepository, LoginView loginView) {
         this.createUserView = createUserView;
         this.UserRepository = userRepository;
         this.loginView = loginView;
