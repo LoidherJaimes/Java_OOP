@@ -8,13 +8,14 @@ public class User {
     private Rol rol;
 
     //constructor
-    public User(int id, String username, String password, String email, Rol rol) {
+    public User(int id, String username, String password, String rol) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.email = email;
         this.rol = rol;
     }
+
+
 
     //getters
     public int getId() {
@@ -50,9 +51,7 @@ public class User {
         this.password = password;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    
 
     public void setRol(Rol rol) {
         this.rol = rol;

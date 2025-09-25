@@ -20,7 +20,7 @@ public class App {
         rolService.addRol("Medico");
 
         // Crear usuarios
-        User admin = new User(1, "pedro", "1234", "pedrojaramillo@vet.org", "Administrador");
+        User admin = new User(1, "pedro", "1234", "Administrador");
         UserRepository userRepository = new UserRepository();
         userRepository.addUser(admin);
 
