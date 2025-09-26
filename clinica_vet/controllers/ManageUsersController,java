@@ -18,78 +18,12 @@ public class ManageUsersController {
         this.manageUsersView = manageUsersView;
         this.userRepository = userRepository;
 
-        // Botón Eliminar
-        manageUsersView.getBtnDelete().addActionListener(e -> {
-            int selectedRow = manageUsersView.getTable().getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(manageUsersView, "Seleccione un usuario primero.");
-                return;
-            }
-
-            int id = (int) manageUsersView.getTable().getValueAt(selectedRow, 0);
-            User userToDelete = null;
-            for (User u : userRepository.getAllUsers()) {
-                if (u.getId() == id) {
-                    userToDelete = u;
-                    break;
-                }
-            }
-
-            if (userToDelete != null) {
-                userRepository.getAllUsers().remove(userToDelete);
-                JOptionPane.showMessageDialog(manageUsersView, "Usuario eliminado exitosamente.");
-                refreshTable();
-            }
-        });
-
-        // Botón Modificar
-        manageUsersView.getBtnEdit().addActionListener(e -> {
-            int selectedRow = manageUsersView.getTable().getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(manageUsersView, "Seleccione un usuario primero.");
-                return;
-            }
-
-            int id = (int) manageUsersView.getTable().getValueAt(selectedRow, 0);
-            User userToEdit = null;
-            for (User u : userRepository.getAllUsers()) {
-                if (u.getId() == id) {
-                    userToEdit = u;
-                    break;
-                }
-            }
-
-            if (userToEdit != null) {
-                String newUsername = JOptionPane.showInputDialog("Nuevo username:", userToEdit.getUsername());
-                String newPassword = JOptionPane.showInputDialog("Nuevo password:", userToEdit.getPassword());
-                String newRol = JOptionPane.showInputDialog("Nuevo rol:", userToEdit.getRol().getName());
-
-                if (newUsername != null && !newUsername.trim().isEmpty()) {
-                    userToEdit.setUsername(newUsername);
-                }
-                if (newPassword != null && !newPassword.trim().isEmpty()) {
-                    userToEdit.setPassword(newPassword);
-                }
-                if (newRol != null && !newRol.trim().isEmpty()) {
-                    userToEdit.setRol(new Rol(userToEdit.getRol().getId(), newRol));
-                }
-
-                JOptionPane.showMessageDialog(manageUsersView, "Usuario modificado exitosamente.");
-                refreshTable();
-            }
-        });
-
+    
         // Botón Cerrar
         manageUsersView.getBtnClose().addActionListener(e -> {
             manageUsersView.dispose();
         });
     }
 
-    // Refrescar la tabla después de cambios
-    private void refreshTable() {
-        manageUsersView.clearTable();
-        for (User u : userRepository.getAllUsers()) {
-            manageUsersView.addUserToTable(u.getId(), u.getUsername(), u.getPassword(), u.getRol());
-        }
-    }
+    
 }
