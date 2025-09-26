@@ -1,27 +1,47 @@
 package clinica_vet.model.repositories;
 
+import clinica_vet.model.entities.User;
 import java.util.ArrayList;
 import java.util.List;
-import clinica_vet.model.entities.User;
 
-public class UserRepository implements IUsuarioRepository {
+public class UserRepository {
 
-    private List<User> listadoUsuario;
+    private List<User> users;
+    private int nextId = 1;
 
     public UserRepository() {
-        listadoUsuario = new ArrayList<>();
-    }
-
-    public void addUser(User user) {
-        listadoUsuario.add(user);
+        users = new ArrayList<>();
+       
     }
 
     public List<User> getAllUsers() {
-        return listadoUsuario;
+        return users;
     }
 
-    @Override
-    public User getUser(String email) {
-        throw new UnsupportedOperationException("Unimplemented method 'getUser'");
+    public User getUserById(int id) {
+        for (User u : users) {
+            if (u.getId() == id) {
+                return u;
+            }
+        }
+        return null;
+    }
+
+    public void addUser(User user) {
+        user.setId(nextId++);
+        users.add(user);
+    }
+
+    public void updateUser(User user) {
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getId() == user.getId()) {
+                users.set(i, user);
+                return;
+            }
+        }
+    }
+
+    public void deleteUserById(int id) {
+        users.removeIf(u -> u.getId() == id);
     }
 }

@@ -1,10 +1,9 @@
 package clinica_vet.controllers;
 
-import clinica_vet.model.entities.User;
+
 import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.views.ManageUsersView;
 
-import javax.swing.*;
 
 public class ManageUsersController {
 
@@ -20,5 +19,5 @@ public class ManageUsersController {
             manageUsersView.setVisible(false);
         });
 
-       
+        
 }}

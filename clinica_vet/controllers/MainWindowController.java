@@ -6,17 +6,24 @@ import clinica_vet.views.MainWindowView;
 import clinica_vet.views.ManageUsersView;
 import clinica_vet.views.LoginView;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.util.List;
 
 public class MainWindowController {
 
     private MainWindowView mainView;
     private UserRepository userRepository;
+    private boolean isAdmin; // <-- Variable para controlar visibilidad
 
     public MainWindowController(MainWindowView mainView, User user, UserRepository userRepository) {
         this.mainView = mainView;
         this.userRepository = userRepository;
+
+        // Determinar si es admin
+        isAdmin = user.getRol() != null && user.getRol().getName().equalsIgnoreCase("Administrador");
+
+        // Mostrar u ocultar botón de Gestión de Usuarios
+        mainView.getBtnUsers().setVisible(isAdmin);
 
         // Logout
         this.mainView.getBtnLogout().addActionListener(e -> {
@@ -39,11 +46,17 @@ public class MainWindowController {
         this.mainView.getBtnUsers().addActionListener(e -> {
             ManageUsersView manageUsersView = new ManageUsersView();
             new ManageUsersController(manageUsersView, userRepository);
+
+            // Limpiar la tabla antes de llenarla
             manageUsersView.clearTable();
+
+            // Cargar todos los usuarios en la tabla
             List<User> listadoUsuarios = userRepository.getAllUsers();
             for (User u : listadoUsuarios) {
-                manageUsersView.addUserToTable(u.getId(), u.getUsername(), u.getPassword(), u.getRol());
+                String rolNombre = (u.getRol() != null) ? u.getRol().getName() : "Sin rol";
+                manageUsersView.addUserToTable(u.getId(), u.getUsername(), u.getPassword(), rolNombre);
             }
+
             manageUsersView.setVisible(true);
         });
     }
