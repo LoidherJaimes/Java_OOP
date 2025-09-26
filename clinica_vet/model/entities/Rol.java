@@ -16,4 +16,8 @@ public class Rol {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    @Override
+public String toString() {
+    return name; // así siempre mostrará el nombre del rol
+}
 }
