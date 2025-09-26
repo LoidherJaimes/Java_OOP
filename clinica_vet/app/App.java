@@ -21,11 +21,12 @@ public class App {
 
         // Crear usuarios iniciales
         Rol rolAdmin = rolService.getRolByName("Administrador");
+        Rol rolaux = rolService.getRolByName("Auxiliar");
         User admin = new User(1, "pedro", "1234", rolAdmin);
-
+        User aux = new User(2, "ana", "1234", rolaux);
         UserRepository userRepository = new UserRepository();
         userRepository.addUser(admin);
-
+        userRepository.addUser(aux);
         // Crear vista login
         LoginView login = new LoginView();
         new LoginController(login, userRepository);

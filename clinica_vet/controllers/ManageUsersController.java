@@ -1,13 +1,7 @@
 package clinica_vet.controllers;
 
-import clinica_vet.model.entities.User;
-import clinica_vet.model.entities.Rol;
 import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.views.ManageUsersView;
-
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionListener;
 
 public class ManageUsersController {
 
@@ -22,6 +16,7 @@ public class ManageUsersController {
         // Botón Cerrar
         manageUsersView.getBtnClose().addActionListener(e -> {
             manageUsersView.dispose();
+            
         });
     }
 
