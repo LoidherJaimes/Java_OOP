@@ -38,6 +38,7 @@ public class MainWindowController {
         // Gestión de usuarios
         this.mainView.getBtnUsers().addActionListener(e -> {
             ManageUsersView manageUsersView = new ManageUsersView();
+            new ManageUsersController(manageUsersView, userRepository);
             manageUsersView.clearTable();
             List<User> listadoUsuarios = userRepository.getAllUsers();
             for (User u : listadoUsuarios) {
