@@ -24,7 +24,14 @@ public class MainWindowController {
 
         // Mostrar u ocultar botón de Gestión de Usuarios
         mainView.getBtnUsers().setVisible(isAdmin);
-
+        this.mainView.getBtnProfile().addActionListener(e -> {
+            JOptionPane.showMessageDialog(
+                mainView,
+                "Usuario: " + user.getUsername() + "\nRol: " + (user.getRol() != null ? user.getRol().getName() : "Sin rol"),
+                "Perfil",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        });
         // Logout
         this.mainView.getBtnLogout().addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(
@@ -46,6 +53,7 @@ public class MainWindowController {
         this.mainView.getBtnUsers().addActionListener(e -> {
             ManageUsersView manageUsersView = new ManageUsersView();
             new ManageUsersController(manageUsersView, userRepository);
+            
 
             // Limpiar la tabla antes de llenarla
             manageUsersView.clearTable();

@@ -27,7 +27,6 @@ public class LoginController {
             }
 
             if (loginUser != null) {
-                JOptionPane.showMessageDialog(null, "Login exitoso");
                 vista.dispose();
 
                 MainWindowView mainView = new MainWindowView();
