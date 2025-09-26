@@ -6,7 +6,6 @@ public class User {
     private String password;
     private Rol rol;
 
-    //constructor
     public User(int id, String username, String password, Rol rol) {
         this.id = id;
         this.username = username;
@@ -14,38 +13,13 @@ public class User {
         this.rol = rol;
     }
 
-    //getters
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public String getUsername() { return username; }
+    public String getPassword() { return password; }
+    public Rol getRol() { return rol; }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Rol getRol() {
-        return rol;
-    }
-
-    //setters
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setRol(Rol rol) {
-        this.rol = rol;
-    }
+    public void setId(int id) { this.id = id; }
+    public void setUsername(String username) { this.username = username; }
+    public void setPassword(String password) { this.password = password; }
+    public void setRol(Rol rol) { this.rol = rol; }
 }
-

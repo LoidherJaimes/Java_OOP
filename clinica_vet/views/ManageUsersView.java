@@ -2,64 +2,59 @@ package clinica_vet.views;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import clinica_vet.model.entities.Rol;
-
 import java.awt.*;
 
-public class ManageUsersView {
+public class ManageUsersView extends JFrame {
 
-    private JFrame manageUserF;
-    private JTable userTable;
+    private JTable table;
     private DefaultTableModel tableModel;
+
+    // Botones
+    private JButton btnEdit;
+    private JButton btnDelete;
     private JButton btnClose;
 
     public ManageUsersView() {
-        // Ventana principal
-        manageUserF = new JFrame("Gestionar Usuarios");
-        manageUserF.setSize(500, 400);
-        manageUserF.setLayout(new BorderLayout());
-        manageUserF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        manageUserF.setLocationRelativeTo(null);
+        setTitle("Gestión de Usuarios");
+        setSize(600, 400);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        // Columnas de la tabla
-        String[] columnNames = {"ID", "Usuario", "Contraseña", "Rol"};
+        setLayout(new BorderLayout());
 
-        // Modelo de tabla vacío
-        tableModel = new DefaultTableModel(columnNames, 0);
+        // Modelo de tabla
+        tableModel = new DefaultTableModel(new Object[]{"ID", "Usuario", "Password", "Rol"}, 0);
+        table = new JTable(tableModel);
 
-        // Tabla de usuarios
-        userTable = new JTable(tableModel);
-        userTable.setFillsViewportHeight(true);
+        JScrollPane scrollPane = new JScrollPane(table);
+        add(scrollPane, BorderLayout.CENTER);
 
-        // Scroll para la tabla
-        JScrollPane scrollPane = new JScrollPane(userTable);
-        manageUserF.add(scrollPane, BorderLayout.CENTER);
-
-        // Botón cerrar
+        // Panel de botones
+        JPanel buttonPanel = new JPanel();
+        btnEdit = new JButton("Modificar");
+        btnDelete = new JButton("Eliminar");
         btnClose = new JButton("Cerrar");
-        JPanel panelBottom = new JPanel();
-        panelBottom.add(btnClose);
 
-        manageUserF.add(panelBottom, BorderLayout.SOUTH);
+        buttonPanel.add(btnEdit);
+        buttonPanel.add(btnDelete);
+        buttonPanel.add(btnClose);
+
+        add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    // Método para añadir un usuario a la tabla
-    public void addUserToTable(int id, String username, String password, Rol role) {
-        tableModel.addRow(new Object[]{id, username, password, role});
-    }
-
-    public JButton getBtnClose() { return btnClose; }
-    public JFrame getManageUserF() { return manageUserF; }
-    public void setVisible(boolean visible) { manageUserF.setVisible(visible); }
-
-    // Limpiar la tabla antes de volver a llenarla
+    // Limpiar tabla
     public void clearTable() {
         tableModel.setRowCount(0);
     }
 
-    public void addUserToTable(int id, String username, String password, Rol rol) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addUserToTable'");
+    // Agregar fila a tabla
+    public void addUserToTable(int id, String username, String password, Object rol) {
+        tableModel.addRow(new Object[]{id, username, password, rol});
     }
+
+    // Getters
+    public JTable getTable() { return table; }
+    public JButton getBtnEdit() { return btnEdit; }
+    public JButton getBtnDelete() { return btnDelete; }
+    public JButton getBtnClose() { return btnClose; }
 }

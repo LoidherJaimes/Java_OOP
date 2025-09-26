@@ -5,7 +5,6 @@ import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.views.MainWindowView;
 import clinica_vet.views.ManageUsersView;
 import clinica_vet.views.LoginView;
-import clinica_vet.views.ProfileView;
 
 import javax.swing.JOptionPane;
 import java.util.List;
@@ -19,7 +18,7 @@ public class MainWindowController {
         this.mainView = mainView;
         this.userRepository = userRepository;
 
-        // Listener Logout
+        // Logout
         this.mainView.getBtnLogout().addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(
                 mainView,
@@ -31,25 +30,19 @@ public class MainWindowController {
             if (confirm == JOptionPane.YES_OPTION) {
                 mainView.dispose();
                 LoginView loginView = new LoginView();
+                new LoginController(loginView, userRepository);
                 loginView.setVisible(true);
             }
         });
 
-        // Listener Gestión de Usuarios
+        // Gestión de usuarios
         this.mainView.getBtnUsers().addActionListener(e -> {
             ManageUsersView manageUsersView = new ManageUsersView();
-
-            // Limpiamos tabla antes de llenar
             manageUsersView.clearTable();
-
-            // Obtenemos usuarios del repositorio
             List<User> listadoUsuarios = userRepository.getAllUsers();
-
-            // Añadimos cada usuario a la tabla
             for (User u : listadoUsuarios) {
                 manageUsersView.addUserToTable(u.getId(), u.getUsername(), u.getPassword(), u.getRol());
             }
-
             manageUsersView.setVisible(true);
         });
     }
