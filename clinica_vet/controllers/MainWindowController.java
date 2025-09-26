@@ -39,11 +39,17 @@ public class MainWindowController {
         this.mainView.getBtnUsers().addActionListener(e -> {
             ManageUsersView manageUsersView = new ManageUsersView();
             new ManageUsersController(manageUsersView, userRepository);
+
+            // Limpiar la tabla antes de llenarla
             manageUsersView.clearTable();
+
+            // Cargar todos los usuarios en la tabla
             List<User> listadoUsuarios = userRepository.getAllUsers();
             for (User u : listadoUsuarios) {
-                manageUsersView.addUserToTable(u.getId(), u.getUsername(), u.getPassword(), u.getRol());
+                String rolNombre = (u.getRol() != null) ? u.getRol().getName() : "Sin rol";
+                manageUsersView.addUserToTable(u.getId(), u.getUsername(), u.getPassword(), rolNombre);
             }
+
             manageUsersView.setVisible(true);
         });
     }
