@@ -6,17 +6,24 @@ import clinica_vet.views.MainWindowView;
 import clinica_vet.views.ManageUsersView;
 import clinica_vet.views.LoginView;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.util.List;
 
 public class MainWindowController {
 
     private MainWindowView mainView;
     private UserRepository userRepository;
+    private boolean isAdmin; // <-- Variable para controlar visibilidad
 
     public MainWindowController(MainWindowView mainView, User user, UserRepository userRepository) {
         this.mainView = mainView;
         this.userRepository = userRepository;
+
+        // Determinar si es admin
+        isAdmin = user.getRol() != null && user.getRol().getName().equalsIgnoreCase("Administrador");
+
+        // Mostrar u ocultar botón de Gestión de Usuarios
+        mainView.getBtnUsers().setVisible(isAdmin);
 
         // Logout
         this.mainView.getBtnLogout().addActionListener(e -> {
