@@ -2,7 +2,6 @@ package clinica_vet.controllers;
 
 import clinica_vet.model.entities.User;
 import clinica_vet.model.repositories.UserRepository;
-import clinica_vet.views.CreateUserView;
 import clinica_vet.views.LoginView;
 import clinica_vet.views.MainWindowView;
 
@@ -35,14 +34,6 @@ public class LoginController {
             } else {
                 JOptionPane.showMessageDialog(null, "Login fallido");
             }
-        });
-
-        // Listener Crear Usuario
-        vista.getBtnCreateUser().addActionListener(ev -> {
-            CreateUserView createUserView = new CreateUserView();
-            new CreateUserController(createUserView, userRepository, vista);
-            createUserView.setVisible(true);
-            vista.setVisible(false);
         });
     }
 }

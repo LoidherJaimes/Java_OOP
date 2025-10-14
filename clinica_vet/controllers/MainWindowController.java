@@ -50,13 +50,12 @@ public class MainWindowController {
         });
 
         // Gestión de usuarios
-        this.mainView.getBtnUsers().addActionListener(e -> {
+        this.mainView.setContent.getBtnUsers().addActionListener(e -> {
             ManageUsersView manageUsersView = new ManageUsersView();
             new ManageUsersController(manageUsersView, userRepository);
             
-
             // Limpiar la tabla antes de llenarla
-            manageUsersView.clearTable();
+            manageUsersView.setContent.clearTable();
 
             // Cargar todos los usuarios en la tabla
             List<User> listadoUsuarios = userRepository.getAllUsers();
