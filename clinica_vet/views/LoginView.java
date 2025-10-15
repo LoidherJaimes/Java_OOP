@@ -90,5 +90,4 @@ public class LoginView extends JFrame {
     public JTextField getUserTF() { return userTF; }
     public JPasswordField getPasswordPF() { return passwordPF; }
     public JButton getBtnLogin() { return btnLogin; }
-    public JButton getBtnCreateUser() { return btnCreateUser; }
 }
