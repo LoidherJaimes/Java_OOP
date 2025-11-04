@@ -7,7 +7,6 @@ public class LoginView extends JFrame {
     private JTextField userTF;
     private JPasswordField passwordPF;
     private JButton btnLogin;
-    private JButton btnCreateUser;
 
     public LoginView() {
         setTitle("Clínica Vet - Login");
@@ -71,18 +70,8 @@ public class LoginView extends JFrame {
         btnLogin.setFocusPainted(false);
         gbc.gridx = 1;
         gbc.gridy = 2;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         centerPanel.add(btnLogin, gbc);
-
-        // Botón crear usuario
-        btnCreateUser = new JButton("Crear Usuario");
-        btnCreateUser.setBackground(new Color(70, 130, 180));
-        btnCreateUser.setForeground(Color.WHITE);
-        btnCreateUser.setFont(new Font("Arial", Font.BOLD, 14));
-        btnCreateUser.setFocusPainted(false);
-        gbc.gridx = 2;
-        gbc.gridy = 2;
-        centerPanel.add(btnCreateUser, gbc);
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
     }

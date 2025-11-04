@@ -14,6 +14,7 @@ public class MainWindowView extends JFrame {
     private JButton btnAppointment;
     private JButton btnHistory;
     private JButton btnPayments;
+    public Object setContent;
 
     public MainWindowView() {
         setTitle("Clínica Vet - Panel Principal");

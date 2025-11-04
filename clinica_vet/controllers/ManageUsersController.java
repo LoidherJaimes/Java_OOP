@@ -3,7 +3,7 @@ package clinica_vet.controllers;
 
 import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.views.ManageUsersView;
-import clinica_vet.views.CreateUserView;
+
 
 
 public class ManageUsersController {
@@ -20,13 +20,8 @@ public class ManageUsersController {
             manageUsersView.setVisible(false);
         });
 
-        // Listener Crear Usuario
-        manageUsersView.getBtnCreateUser().addActionListener(ev -> {
-            CreateUserView createUserView = new CreateUserView();
-            new CreateUserController(createUserView, userRepository, vista);
-            createUserView.setVisible(true);
-            vista.setVisible(false);
-        });
+        // Mostrar la ventana de gestión de usuarios
+        this.manageUsersView.setVisible(true);
 
         
     }

@@ -3,11 +3,11 @@ package clinica_vet.controllers;
 import clinica_vet.model.entities.User;
 import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.views.MainWindowView;
-import clinica_vet.views.ManageUsersView;
+
 import clinica_vet.views.LoginView;
 
 import javax.swing.*;
-import java.util.List;
+
 
 public class MainWindowController {
 
@@ -48,23 +48,11 @@ public class MainWindowController {
                 loginView.setVisible(true);
             }
         });
-
-        // Gestión de usuarios
-        this.mainView.setContent.getBtnUsers().addActionListener(e -> {
-            ManageUsersView manageUsersView = new ManageUsersView();
+        this.mainView.getBtnUsers().addActionListener(e -> {
+            // Abrir ventana de gestión de usuarios
+            clinica_vet.views.ManageUsersView manageUsersView = new clinica_vet.views.ManageUsersView();
             new ManageUsersController(manageUsersView, userRepository);
-            
-            // Limpiar la tabla antes de llenarla
-            manageUsersView.setContent.clearTable();
-
-            // Cargar todos los usuarios en la tabla
-            List<User> listadoUsuarios = userRepository.getAllUsers();
-            for (User u : listadoUsuarios) {
-                String rolNombre = (u.getRol() != null) ? u.getRol().getName() : "Sin rol";
-                manageUsersView.addUserToTable(u.getId(), u.getUsername(), u.getPassword(), rolNombre);
-            }
-
-            manageUsersView.setVisible(true);
         });
+
     }
 }

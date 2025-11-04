@@ -61,7 +61,7 @@ public class CreateUserView {
     public JPasswordField getVerificationPasswordPF() { return verificationPasswordPF; }
     public JTextField getCreateUserTF() { return createUserTF; }
     public JButton getBtnCreateUserL() { return btnCreateUserL; }
-    public JButton getBtnCreateUser() { return btnCreateUser; }
+    public JButton getBtnCreateUser() { return btnCreateUserL; }
 
     public void setVisible(boolean visible) {
         createUserF.setVisible(visible);
