@@ -13,6 +13,7 @@ public class ManageUsersView extends JFrame {
     private JButton btnEdit;
     private JButton btnDelete;
     private JButton btnClose;
+    private JButton btnCreate;
 
     public ManageUsersView() {
         setTitle("Gestión de Usuarios");
@@ -31,10 +32,13 @@ public class ManageUsersView extends JFrame {
 
         // Panel de botones
         JPanel buttonPanel = new JPanel();
+
         btnEdit = new JButton("Modificar");
         btnDelete = new JButton("Eliminar");
         btnClose = new JButton("Cerrar");
+        btnCreate = new JButton("Crear");
 
+        buttonPanel.add(btnCreate);
         buttonPanel.add(btnEdit);
         buttonPanel.add(btnDelete);
         buttonPanel.add(btnClose);
@@ -54,6 +58,7 @@ public class ManageUsersView extends JFrame {
 
     // Getters
     public JTable getTable() { return table; }
+    public JButton getBtnCreate() { return btnCreate; }
     public JButton getBtnEdit() { return btnEdit; }
     public JButton getBtnDelete() { return btnDelete; }
     public JButton getBtnClose() { return btnClose; }
