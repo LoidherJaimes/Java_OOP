@@ -14,6 +14,12 @@ public class MainWindowView extends JFrame {
     private JButton btnAppointment;
     private JButton btnHistory;
     private JButton btnPayments;
+
+    // 🔹 Nuevos botones
+    private JButton btnOwners;
+    private JButton btnPets;
+    private JButton btnAgenda;
+
     public Object setContent;
 
     public MainWindowView() {
@@ -59,7 +65,7 @@ public class MainWindowView extends JFrame {
 
     private void createSideMenu() {
         sideMenu = new JPanel();
-        sideMenu.setLayout(new GridLayout(6, 1, 0, 15));
+        sideMenu.setLayout(new GridLayout(9, 1, 0, 15)); // aumentamos el número de filas
         sideMenu.setBackground(new Color(245, 245, 245));
         sideMenu.setPreferredSize(new Dimension(220, 0));
 
@@ -68,15 +74,27 @@ public class MainWindowView extends JFrame {
         btnHistory = new JButton("📖 Historia Clínica");
         btnPayments = new JButton("💳 Facturación y Pagos");
 
+        // 🔹 Nuevos botones
+        btnOwners = new JButton("🧍‍♂️ Gestión de Dueños");
+        btnPets = new JButton("🐶 Gestión de Mascotas");
+        btnAgenda = new JButton("🗓️ Agenda de Citas");
+
         styleMenuButton(btnUsers);
         styleMenuButton(btnAppointment);
         styleMenuButton(btnHistory);
         styleMenuButton(btnPayments);
+        styleMenuButton(btnOwners);
+        styleMenuButton(btnPets);
+        styleMenuButton(btnAgenda);
 
+        // 🔹 Agregamos los botones al panel lateral
         sideMenu.add(btnUsers);
         sideMenu.add(btnAppointment);
         sideMenu.add(btnHistory);
         sideMenu.add(btnPayments);
+        sideMenu.add(btnOwners);
+        sideMenu.add(btnPets);
+        sideMenu.add(btnAgenda);
     }
 
     private void createContentView() {
@@ -114,11 +132,16 @@ public class MainWindowView extends JFrame {
         contentView.repaint();
     }
 
-    // Getters
+    // 🔹 Getters
     public JButton getBtnProfile() { return btnPerfil; }
     public JButton getBtnLogout() { return btnLogout; }
     public JButton getBtnUsers() { return btnUsers; }
     public JButton getBtnAppointment() { return btnAppointment; }
     public JButton getBtnHistory() { return btnHistory; }
     public JButton getBtnPayments() { return btnPayments; }
+
+    // 🔹 Getters nuevos
+    public JButton getBtnOwners() { return btnOwners; }
+    public JButton getBtnPets() { return btnPets; }
+    public JButton getBtnAgenda() { return btnAgenda; }
 }
