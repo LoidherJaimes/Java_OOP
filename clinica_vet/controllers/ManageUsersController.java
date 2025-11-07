@@ -5,6 +5,8 @@ import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.views.CreateUserView;
 import clinica_vet.views.ManageUsersView;
 
+import java.util.UUID;
+
 import javax.swing.*;
 
 public class ManageUsersController {
@@ -56,7 +58,7 @@ public class ManageUsersController {
                 return;
             }
 
-            int userId = (int) manageUsersView.getTable().getValueAt(selectedRow, 0);
+            UUID userId = (UUID) manageUsersView.getTable().getValueAt(selectedRow, 0);
             
             int confirm = JOptionPane.showConfirmDialog(manageUsersView,
                 "¿Está seguro de eliminar este usuario?",

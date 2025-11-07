@@ -14,7 +14,7 @@ public class CreateUserView {
         createUserF = new JFrame("Crear usuario");
         createUserF.setSize(400, 300);
         createUserF.setLayout(null);
-        createUserF.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        createUserF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         // Centrar la ventana
         createUserF.setLocationRelativeTo(null);
 

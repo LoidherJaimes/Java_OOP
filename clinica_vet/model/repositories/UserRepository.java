@@ -3,6 +3,7 @@ package clinica_vet.model.repositories;
 import clinica_vet.model.entities.User;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class UserRepository {
 
@@ -18,7 +19,8 @@ public class UserRepository {
         return users;
     }
 
-    public User getUserById(int id) {
+
+    public User getUserById(UUID id) {
         for (User u : users) {
             if (u.getId() == id) {
                 return u;
@@ -28,7 +30,7 @@ public class UserRepository {
     }
 
     public void addUser(User user) {
-        user.setId(nextId++);
+        user.setId(UUID.randomUUID());
         users.add(user);
     }
 
@@ -41,7 +43,7 @@ public class UserRepository {
         }
     }
 
-    public void deleteUserById(int id) {
-        users.removeIf(u -> u.getId() == id);
+    public void deleteUserById(UUID userId) {
+        users.removeIf(u -> u.getId() == userId);
     }
 }

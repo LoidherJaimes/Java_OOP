@@ -3,6 +3,7 @@ package clinica_vet.views;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.UUID;
 
 public class ManageUsersView extends JFrame {
 
@@ -52,7 +53,7 @@ public class ManageUsersView extends JFrame {
     }
 
     // Agregar fila a tabla
-    public void addUserToTable(int id, String username, String password, Object rol) {
+    public void addUserToTable(UUID id, String username, String password, Object rol) {
         tableModel.addRow(new Object[]{id, username, password, rol});
     }
 
