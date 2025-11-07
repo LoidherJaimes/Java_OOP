@@ -2,56 +2,73 @@ package clinica_vet.controllers;
 
 import clinica_vet.views.CreateUserView;
 import clinica_vet.model.repositories.UserRepository;
-import clinica_vet.model.repositories.RolRepository;
 import clinica_vet.model.entities.User;
 import clinica_vet.model.entities.Rol;
 
 import javax.swing.*;
-import java.util.List;
 
 public class CreateUserController {
 
     private CreateUserView createUserView;
     private UserRepository userRepository;
+    private ManageUsersController manageUsersController;
 
-    public CreateUserController(CreateUserView createUserView, UserRepository userRepository, LoginView loginView) {
+    public CreateUserController(CreateUserView createUserView, UserRepository userRepository, ManageUsersController manageUsersController) {
         this.createUserView = createUserView;
         this.userRepository = userRepository;
+        this.manageUsersController = manageUsersController;
 
         this.createUserView.getBtnCreateUserL().addActionListener(e -> {
-            String username = createUserView.getCreateUserTF().getText();
+            String username = createUserView.getCreateUserTF().getText().trim();
             String password = new String(createUserView.getCreatePasswordPF().getPassword());
             String passwordVerify = new String(createUserView.getVerificationPasswordPF().getPassword());
 
+            // Validación de campos vacíos
             if (username.isEmpty() || password.isEmpty() || passwordVerify.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos.");
+                JOptionPane.showMessageDialog(createUserView.getCreateUserF(), 
+                    "Por favor, complete todos los campos.",
+                    "Error de validación",
+                    JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
+            // Validación de coincidencia de contraseñas
             if (!password.equals(passwordVerify)) {
-                JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden.");
+                JOptionPane.showMessageDialog(createUserView.getCreateUserF(), 
+                    "Las contraseñas no coinciden.",
+                    "Error de validación",
+                    JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            List<User> listadoUsuario = userRepository.getAllUsers();
-            for (User u : listadoUsuario) {
-                if (username.equals(u.getUsername())) {
-                    JOptionPane.showMessageDialog(null, "El nombre de usuario ya existe.");
+            // Validación de usuario duplicado
+            for (User u : userRepository.getAllUsers()) {
+                if (username.equalsIgnoreCase(u.getUsername())) {
+                    JOptionPane.showMessageDialog(createUserView.getCreateUserF(), 
+                        "El nombre de usuario ya existe.",
+                        "Error de validación",
+                        JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             }
 
-            //----List<Rol> listadoRol = rolRepository.getAllRoles();
-
-            int newId = listadoUsuario.size() + 1;
-            // Rol por defecto
-            Rol defaultRol = new Rol(0, "USER");
-            User newUser = new User(newId, username, password, defaultRol);
+            // Crear nuevo usuario con rol por defecto
+            Rol defaultRol = new Rol(0, "Auxiliar");
+            User newUser = new User(0, username, password, defaultRol);
             userRepository.addUser(newUser);
 
-            JOptionPane.showMessageDialog(null, "Usuario creado exitosamente.");
+            JOptionPane.showMessageDialog(createUserView.getCreateUserF(), 
+                "Usuario creado exitosamente.",
+                "Éxito",
+                JOptionPane.INFORMATION_MESSAGE);
 
-            createUserView.setVisible(false);
+            // Recargar tabla de usuarios
+            if (manageUsersController != null) {
+                manageUsersController.loadUsersIntoTable();
+            }
+
+            // Cerrar ventana
+            createUserView.getCreateUserF().dispose();
         });
     }
 }
