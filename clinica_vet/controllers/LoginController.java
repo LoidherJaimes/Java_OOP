@@ -1,6 +1,7 @@
 package clinica_vet.controllers;
 
 import clinica_vet.model.entities.User;
+import clinica_vet.model.repositories.IRolService; // Nueva Importación
 import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.views.LoginView;
 import clinica_vet.views.MainWindowView;
@@ -9,8 +10,10 @@ import java.util.List;
 import javax.swing.JOptionPane;
 
 public class LoginController {
-
-    public LoginController(LoginView vista, UserRepository userRepository) {
+    
+    // Constructor modificado
+    public LoginController(LoginView vista, UserRepository userRepository, IRolService rolService) {
+        
         // Listener Login
         vista.getBtnLogin().addActionListener(e -> {
             String username = vista.getUserTF().getText();
@@ -29,7 +32,8 @@ public class LoginController {
                 vista.dispose();
 
                 MainWindowView mainView = new MainWindowView();
-                new MainWindowController(mainView, loginUser, userRepository);
+                // ¡CORRECCIÓN CLAVE! Pasar el rolService a MainWindowController
+                new MainWindowController(mainView, loginUser, userRepository, rolService); 
                 mainView.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Login fallido");

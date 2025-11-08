@@ -2,17 +2,19 @@ package clinica_vet.views;
 
 import javax.swing.*;
 
+
 public class CreateUserView {
     private JFrame createUserF;
     private JTextField createUserTF;
     private JPasswordField createPasswordPF;
     private JPasswordField verificationPasswordPF;
     private JButton btnCreateUserL;
+    private JComboBox<String> rolComboBox; // ¡NUEVO CAMPO!
 
     public CreateUserView() {
         // Crear la ventana principal
         createUserF = new JFrame("Crear usuario");
-        createUserF.setSize(400, 300);
+        createUserF.setSize(400, 350); // Aumentar altura para el ComboBox
         createUserF.setLayout(null);
         createUserF.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         // Centrar la ventana
@@ -23,7 +25,7 @@ public class CreateUserView {
         textUserL.setBounds(140, 10, 120, 25);
         createUserF.add(textUserL);
 
-        // Text field usuario (ahora inicializa el atributo)
+        // Text field usuario
         createUserTF = new JTextField();
         createUserTF.setBounds(130, 30, 150, 25);
         createUserTF.setHorizontalAlignment(JTextField.CENTER);
@@ -34,7 +36,7 @@ public class CreateUserView {
         textPasswordL.setBounds(140, 60, 150, 25);
         createUserF.add(textPasswordL);
 
-        // Password field (atributo, no local)
+        // Password field
         createPasswordPF = new JPasswordField();
         createPasswordPF.setBounds(130, 80, 150, 25);
         createUserF.add(createPasswordPF);
@@ -44,14 +46,24 @@ public class CreateUserView {
         textPassword2L.setBounds(140, 110, 180, 25);
         createUserF.add(textPassword2L);
 
-        // Password field verificación (atributo, no local)
+        // Password field verificación
         verificationPasswordPF = new JPasswordField();
         verificationPasswordPF.setBounds(130, 130, 150, 25);
         createUserF.add(verificationPasswordPF);
 
-        // Botón crear usuario (atributo, no local)
+        // 1. NUEVOS ELEMENTOS PARA EL ROL
+        JLabel textRolL = new JLabel("Seleccione Rol:");
+        textRolL.setBounds(140, 160, 180, 25);
+        createUserF.add(textRolL);
+        
+        // ComboBox de Roles
+        rolComboBox = new JComboBox<>();
+        rolComboBox.setBounds(130, 180, 150, 25);
+        createUserF.add(rolComboBox);
+
+        // Botón crear usuario
         btnCreateUserL = new JButton("Crear");
-        btnCreateUserL.setBounds(150, 170, 100, 25);
+        btnCreateUserL.setBounds(150, 230, 100, 25);
         createUserF.add(btnCreateUserL);
     }
 
@@ -61,7 +73,7 @@ public class CreateUserView {
     public JPasswordField getVerificationPasswordPF() { return verificationPasswordPF; }
     public JTextField getCreateUserTF() { return createUserTF; }
     public JButton getBtnCreateUserL() { return btnCreateUserL; }
-    public JButton getBtnCreateUser() { return btnCreateUserL; }
+    public JComboBox<String> getRolComboBox() { return rolComboBox; } // ¡NUEVO GETTER!
 
     public void setVisible(boolean visible) {
         createUserF.setVisible(visible);

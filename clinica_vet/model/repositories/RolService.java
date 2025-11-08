@@ -1,6 +1,7 @@
 package clinica_vet.model.repositories;
 
 import clinica_vet.model.entities.Rol;
+import java.util.List;
 
 public class RolService implements IRolService {
 
@@ -34,5 +35,11 @@ public class RolService implements IRolService {
             }
         }
         return null;
+    }
+    
+    // 1. ¡NUEVA IMPLEMENTACIÓN REQUERIDA!
+    @Override
+    public List<Rol> getAllRoles() {
+        return rolRepository.getAllRoles();
     }
 }
