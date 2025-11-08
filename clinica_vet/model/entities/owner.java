@@ -1,49 +1,35 @@
 package clinica_vet.model.entities;
 
-import java.util.List;
-// Si la clase Pet está en otro paquete, necesitarías importarla, 
-// pero asumo que está en el mismo paquete.
+import java.util.UUID;
 
-public class owner {
-    private int document;
+public class Owner {
+    private UUID id;
     private String name;
     private String phone;
-    // 1. Atributo para la lista de mascotas
-    private List<Pet> pets; 
+    private String address;
 
-    public int getDocument() {
-        return document;
-    }
-
-    public void setDocument(int document) {
-        this.document = document;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Owner(String name, String phone, String address) {
+        this.id = UUID.randomUUID();
         this.name = name;
-    }
-
-    // 2. Getter para la lista de mascotas
-    public List<Pet> getPets() {
-        return pets;
-    }
-
-    // 3. Setter para la lista de mascotas
-    public void setPets(List<Pet> pets) {
-        this.pets = pets;
-    }
-    
-   
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
         this.phone = phone;
+        this.address = address;
     }
     
+    public Owner(UUID id, String name, String phone, String address) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.address = address;
+    }
+
+    public UUID getId() { return id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getAddress() { return address; }
+    public void setAddress(String address) { this.address = address; }
 }

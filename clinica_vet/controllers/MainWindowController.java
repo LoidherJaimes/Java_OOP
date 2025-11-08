@@ -2,13 +2,15 @@ package clinica_vet.controllers;
 
 import clinica_vet.model.entities.User;
 import clinica_vet.model.repositories.IRolService;
+import clinica_vet.model.repositories.OwnerRepository; // Importar nuevo repositorio
 import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.views.MainWindowView;
 import clinica_vet.views.ManageUsersView;
-import clinica_vet.views.ProfileView; // Ahora es JPanel
-import clinica_vet.views.LogoutView;   // Nuevo JPanel
+import clinica_vet.views.OwnerManagementView;
+import clinica_vet.views.ProfileView;
+import clinica_vet.views.LogoutView;
 
-import javax.swing.*;
+
 
 public class MainWindowController {
     
@@ -16,24 +18,30 @@ public class MainWindowController {
     private User currentUser;
     private UserRepository userRepository;
     private IRolService rolService;
+    private OwnerRepository ownerRepository; // ⭐ NUEVO REPOSITORIO
+    private final Runnable onLogoutAction; 
 
-    public MainWindowController(MainWindowView mainWindowView, User currentUser, UserRepository userRepository, IRolService rolService) {
+    // ⭐ CONSTRUCTOR COMPLETO: Ahora incluye OwnerRepository
+    public MainWindowController(MainWindowView mainWindowView, User currentUser, UserRepository userRepository, 
+                                IRolService rolService, OwnerRepository ownerRepository, Runnable onLogoutAction) { 
         this.mainWindowView = mainWindowView;
         this.currentUser = currentUser;
         this.userRepository = userRepository;
         this.rolService = rolService;
-
+        this.ownerRepository = ownerRepository; // Asignar
+        this.onLogoutAction = onLogoutAction;
+        
         setupListeners();
         mainWindowView.setContent(mainWindowView.getWelcomeView());
     }
 
     private void setupListeners() {
-        // ⭐ Listener para Perfil (Carga la vista en el panel central)
+        // Listener para Perfil (Carga la vista en el panel central)
         mainWindowView.getBtnProfile().addActionListener(e -> {
             loadProfileView();
         });
 
-        // ⭐ Listener para Cerrar Sesión (Carga la vista de confirmación en el panel central)
+        // Listener para Cerrar Sesión (Carga la vista de confirmación)
         mainWindowView.getBtnLogout().addActionListener(e -> {
             loadLogoutView();
         });
@@ -43,7 +51,12 @@ public class MainWindowController {
             loadManageUsersView();
         });
         
-        // ... (otros listeners) ...
+        // ⭐ Listener para Gestión de Dueños
+        mainWindowView.getBtnOwners().addActionListener(e -> {
+            loadOwnerManagementView();
+        });
+        
+        // TODO: Agregar listeners para los demás botones (Pets, Agenda, etc.)
     }
     
     // --------------------------------------------------------
@@ -53,19 +66,17 @@ public class MainWindowController {
     private void loadProfileView() {
         ProfileView profileView = new ProfileView(currentUser);
         mainWindowView.setContent(profileView);
-        // Opcional: Si ProfileView tuviera un botón "Volver", se le agregaría un listener aquí.
     }
     
     private void loadLogoutView() {
         LogoutView logoutView = new LogoutView();
         mainWindowView.setContent(logoutView);
         
-        // Configurar los listeners para la confirmación de logout
         logoutView.getBtnYes().addActionListener(e -> {
-            // Lógica para cerrar la aplicación y volver a la vista de Login (PENDIENTE DE IMPLEMENTACIÓN)
-            mainWindowView.dispose();
-            // Asumiendo que MainApp reabre la vista de Login...
-            JOptionPane.showMessageDialog(null, "Sesión cerrada. Volviendo a la pantalla de login.");
+            // 1. Destruir la ventana principal
+            mainWindowView.dispose(); 
+            // 2. Ejecutar la acción inyectada que abre el Login
+            onLogoutAction.run(); 
         });
         
         logoutView.getBtnNo().addActionListener(e -> {
@@ -79,11 +90,19 @@ public class MainWindowController {
         new ManageUsersController(manageUsersView, userRepository, rolService, mainWindowView);
         mainWindowView.setContent(manageUsersView);
         
-        // Listener para el botón "Volver" dentro de ManageUsersView
         manageUsersView.getBtnClose().addActionListener(e -> {
             mainWindowView.setContent(mainWindowView.getWelcomeView());
         });
     }
     
-    // ... (otros métodos de carga de vistas) ...
+    // ⭐ NUEVO MÉTODO DE CARGA: Gestión de Dueños
+    private void loadOwnerManagementView() {
+        OwnerManagementView ownerManagementView = new OwnerManagementView();
+        
+        // Instanciar el controlador, pasando el OwnerRepository y la ventana principal
+        new OwnerManagementController(ownerManagementView, ownerRepository, mainWindowView);
+        
+        // Establecer el JPanel de la vista en el área central
+        mainWindowView.setContent(ownerManagementView);
+    }
 }

@@ -1,7 +1,7 @@
 package clinica_vet.views;
 
 import javax.swing.*;
-import java.awt.event.ActionListener;
+
 
 public class CreateUserView {
     private JFrame createUserF;

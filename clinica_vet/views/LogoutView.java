@@ -2,7 +2,7 @@ package clinica_vet.views;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+
 
 // ⭐ Extiende JPanel para ser contenido central
 public class LogoutView extends JPanel { 
