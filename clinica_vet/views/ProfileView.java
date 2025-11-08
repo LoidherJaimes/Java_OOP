@@ -4,23 +4,17 @@ import clinica_vet.model.entities.User;
 import javax.swing.*;
 import java.awt.*;
 
-public class ProfileView extends JDialog { 
+// ⭐ CAMBIO CLAVE: Extiende JPanel para ser contenido central
+public class ProfileView extends JPanel { 
 
     private JLabel lblTitle;
     private JLabel lblUsernameValue;
     private JLabel lblRoleValue;
-    private JButton btnClose;
 
     public ProfileView(User user) {
-        // Configuración de la ventana JDialog
-        setTitle("Mi Perfil de Usuario");
-        setSize(450, 280); 
-        setModal(true); 
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null); 
+        // Ya no se requiere JDialog setup (setTitle, setModal, setLocationRelativeTo, etc.)
         setLayout(new BorderLayout(15, 15)); 
-        setResizable(false); 
-
+        
         // Colores y fuentes base
         Color primaryColor = new Color(70, 130, 180); 
         Color backgroundColor = new Color(245, 245, 245); 
@@ -54,53 +48,31 @@ public class ProfileView extends JDialog {
         JLabel lblUsername = new JLabel("Nombre de Usuario:");
         lblUsername.setFont(labelFont);
         lblUsername.setForeground(textColor);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridx = 0; gbc.gridy = 0;
         infoPanel.add(lblUsername, gbc);
 
         lblUsernameValue = new JLabel(user.getUsername());
         lblUsernameValue.setFont(valueFont);
         lblUsernameValue.setForeground(primaryColor); 
-        gbc.gridx = 1;
-        gbc.gridy = 0;
+        gbc.gridx = 1; gbc.gridy = 0;
         infoPanel.add(lblUsernameValue, gbc);
 
         // Rol del Usuario
         JLabel lblRole = new JLabel("Nivel de Acceso:");
         lblRole.setFont(labelFont);
         lblRole.setForeground(textColor);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridx = 0; gbc.gridy = 1;
         infoPanel.add(lblRole, gbc);
 
         String roleName = user.getRol() != null ? user.getRol().getName() : "Sin Rol Asignado";
         lblRoleValue = new JLabel(roleName);
         lblRoleValue.setFont(valueFont);
         lblRoleValue.setForeground(primaryColor);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridx = 1; gbc.gridy = 1;
         infoPanel.add(lblRoleValue, gbc);
         
         add(infoPanel, BorderLayout.CENTER);
-
-        // --- Panel Inferior (Botón de Cerrar) ---
-        JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        footerPanel.setBackground(backgroundColor);
         
-        btnClose = new JButton("Cerrar");
-        styleTopButton(btnClose, new Color(220, 20, 60)); 
-        btnClose.addActionListener(e -> dispose()); 
-        footerPanel.add(btnClose);
-        
-        add(footerPanel, BorderLayout.SOUTH);
-    }
-
-    private void styleTopButton(JButton button, Color bgColor) {
-        button.setBackground(bgColor);
-        button.setForeground(Color.WHITE); 
-        button.setFont(new Font("Arial", Font.BOLD, 14)); 
-        button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(8, 20, 8, 20)); 
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR)); 
+        // Nota: Si quieres un botón "Volver", debes agregarlo y darle un getter.
     }
 }

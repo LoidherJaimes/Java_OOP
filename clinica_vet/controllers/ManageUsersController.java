@@ -6,6 +6,7 @@ import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.views.CreateUserView;
 import clinica_vet.views.ManageUsersView;
 import clinica_vet.views.EditUserView; 
+import clinica_vet.views.MainWindowView; // Necesitas el owner para los JDialogs
 
 import java.util.UUID;
 import javax.swing.*;
@@ -15,89 +16,77 @@ public class ManageUsersController {
     private ManageUsersView manageUsersView;
     private UserRepository userRepository;
     private IRolService rolService;
+    private MainWindowView mainWindowViewOwner; // Referencia al Main Window para JDialogs
 
-    public ManageUsersController(ManageUsersView manageUsersView, UserRepository userRepository, IRolService rolService) {
+    // Se cambió el constructor para recibir el ManageUsersView como JPanel, y el MainWindowView como owner
+    public ManageUsersController(ManageUsersView manageUsersView, UserRepository userRepository, IRolService rolService, MainWindowView mainWindowViewOwner) {
         this.manageUsersView = manageUsersView;
         this.userRepository = userRepository;
         this.rolService = rolService; 
+        this.mainWindowViewOwner = mainWindowViewOwner;
 
-        // Cargar usuarios al iniciar
         loadUsersIntoTable(); 
 
-        // Listener botón cerrar
+        // Listener para volver al menú principal
         this.manageUsersView.getBtnClose().addActionListener(e -> {
-            manageUsersView.dispose();
+            mainWindowViewOwner.setContent(mainWindowViewOwner.getWelcomeView());
         });
 
-        // --- Listener Botón Crear Usuario ---
+        // Listener Botón Crear Usuario
         this.manageUsersView.getBtnCreate().addActionListener(e -> {
             CreateUserView createUserView = new CreateUserView();
-            // Pasa 'this' para que se pueda recargar la tabla al crear
             new CreateUserController(createUserView, userRepository, this, rolService); 
             createUserView.setVisible(true);
         });
 
-        // --- Listener Botón Modificar (Usando EditUserController) ---
+        // Listener Botón Modificar
         this.manageUsersView.getBtnEdit().addActionListener(e -> {
             int selectedRow = manageUsersView.getTable().getSelectedRow();
             if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(manageUsersView, 
-                    "Por favor, seleccione un usuario para editar.", 
-                    "Advertencia", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(manageUsersView, "Por favor, seleccione un usuario para editar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // 1. Obtener el ID del usuario de la tabla
             Object idObject = manageUsersView.getTable().getValueAt(selectedRow, 0);
             UUID userId;
             
             try {
-                // Asegurar que el ID sea tratado como UUID
                 userId = (UUID) idObject;
             } catch (ClassCastException ex) {
                 JOptionPane.showMessageDialog(manageUsersView, "Error: El ID del usuario no es válido.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // 2. Buscar el objeto User en el repositorio
             User userToEdit = userRepository.getUserById(userId); 
 
             if (userToEdit != null) {
-                // 3. Crear la vista de edición
-                EditUserView editView = new EditUserView(manageUsersView, userToEdit);
-                
-                // 4. Instanciar el EditUserController y pasar todas las dependencias
+                // Usar el MainWindowView como 'owner' para el JDialog
+                EditUserView editView = new EditUserView(mainWindowViewOwner, userToEdit); 
                 new EditUserController(editView, userToEdit, userRepository, rolService, this); 
-                
-                // 5. Mostrar la ventana de edición
                 editView.setVisible(true);
             } else {
-                 JOptionPane.showMessageDialog(manageUsersView, "Usuario no encontrado en la base de datos.", "Error", JOptionPane.ERROR_MESSAGE);
+                 JOptionPane.showMessageDialog(manageUsersView, "Usuario no encontrado.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        // --- Listener Botón Eliminar (Corregido para UUID.equals()) ---
+        // Listener Botón Eliminar
         this.manageUsersView.getBtnDelete().addActionListener(e -> {
             int selectedRow = manageUsersView.getTable().getSelectedRow();
             if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(manageUsersView, 
-                    "Por favor, seleccione un usuario para eliminar.", 
-                    "Advertencia", 
-                    JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(manageUsersView, "Por favor, seleccione un usuario para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            // 1. Obtener el ID del usuario
             Object idObject = manageUsersView.getTable().getValueAt(selectedRow, 0);
             UUID userId;
             
             try {
                 userId = (UUID) idObject;
             } catch (ClassCastException ex) {
-                JOptionPane.showMessageDialog(manageUsersView, "Error: El ID del usuario no es un formato válido.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(manageUsersView, "Error: El ID del usuario no es válido.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
+            
             int confirm = JOptionPane.showConfirmDialog(manageUsersView,
                 "¿Está seguro de eliminar a " + manageUsersView.getTable().getValueAt(selectedRow, 1) + "?",
                 "Confirmar eliminación",
@@ -105,9 +94,7 @@ public class ManageUsersController {
 
             if (confirm == JOptionPane.YES_OPTION) {
                 try {
-                    // La corrección clave está en el UserRepository, aquí solo se llama
                     userRepository.deleteUserById(userId);
-                    
                     loadUsersIntoTable();
                     JOptionPane.showMessageDialog(manageUsersView, "Usuario eliminado exitosamente.");
                 } catch (Exception ex) {
@@ -115,18 +102,15 @@ public class ManageUsersController {
                 }
             }
         });
-
-        this.manageUsersView.setVisible(true);
     }
 
-    // Método para cargar usuarios en la tabla (usado por Create/Edit Controller para refrescar)
     public void loadUsersIntoTable() {
         manageUsersView.clearTable();
         for (User user : userRepository.getAllUsers()) {
             manageUsersView.addUserToTable(
                 user.getId(),
                 user.getUsername(),
-                user.getPassword(), // Se asume que por ahora muestras el password
+                user.getPassword(), 
                 user.getRol() != null ? user.getRol().getName() : "Sin rol"
             );
         }

@@ -20,8 +20,6 @@ public class MainWindowView extends JFrame {
     private JButton btnPets;
     private JButton btnAgenda;
 
-    public Object setContent;
-
     public MainWindowView() {
         setTitle("Clínica Vet - Panel Principal");
         setSize(1000, 650);
@@ -125,12 +123,24 @@ public class MainWindowView extends JFrame {
         button.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
     }
 
+    // ⭐ MÉTODO CLAVE PARA CAMBIAR EL CONTENIDO CENTRAL
     public void setContent(JPanel newContent) {
         contentView.removeAll();
         contentView.add(newContent, BorderLayout.CENTER);
         contentView.revalidate();
         contentView.repaint();
     }
+    
+    // ⭐ Método para restablecer la vista de bienvenida
+    public JPanel getWelcomeView() {
+        JPanel welcomePanel = new JPanel(new BorderLayout());
+        JLabel lblBienvenida = new JLabel("Bienvenido al Sistema de Clínica Vet", SwingConstants.CENTER);
+        lblBienvenida.setFont(new Font("Arial", Font.BOLD, 20));
+        lblBienvenida.setForeground(new Color(60, 60, 60));
+        welcomePanel.add(lblBienvenida, BorderLayout.CENTER);
+        return welcomePanel;
+    }
+
 
     // 🔹 Getters
     public JButton getBtnProfile() { return btnPerfil; }

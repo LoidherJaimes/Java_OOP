@@ -5,7 +5,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.UUID;
 
-public class ManageUsersView extends JFrame {
+// ⭐ CAMBIO CLAVE: Ahora extiende JPanel
+public class ManageUsersView extends JPanel {
 
     private JTable table;
     private DefaultTableModel tableModel;
@@ -13,16 +14,13 @@ public class ManageUsersView extends JFrame {
     // Botones
     private JButton btnEdit;
     private JButton btnDelete;
-    private JButton btnClose;
+    private JButton btnClose; // Usado para volver al panel de bienvenida
     private JButton btnCreate;
 
     public ManageUsersView() {
-        setTitle("Gestión de Usuarios");
-        setSize(600, 400);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
+        // Ya no necesitas setTitle, setSize, setLocationRelativeTo, etc.
         setLayout(new BorderLayout());
+        setPreferredSize(new Dimension(780, 550)); 
 
         // Modelo de tabla
         tableModel = new DefaultTableModel(new Object[]{"ID", "Usuario", "Password", "Rol"}, 0);
@@ -33,10 +31,11 @@ public class ManageUsersView extends JFrame {
 
         // Panel de botones
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         btnEdit = new JButton("Modificar");
         btnDelete = new JButton("Eliminar");
-        btnClose = new JButton("Cerrar");
+        btnClose = new JButton("Volver al Menú Principal");
         btnCreate = new JButton("Crear");
 
         buttonPanel.add(btnCreate);
@@ -62,5 +61,5 @@ public class ManageUsersView extends JFrame {
     public JButton getBtnCreate() { return btnCreate; }
     public JButton getBtnEdit() { return btnEdit; }
     public JButton getBtnDelete() { return btnDelete; }
-    public JButton getBtnClose() { return btnClose; }
+    public JButton getBtnClose() { return btnClose; } // Ahora se usa para navegación interna
 }

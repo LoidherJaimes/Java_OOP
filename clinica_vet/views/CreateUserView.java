@@ -1,7 +1,7 @@
 package clinica_vet.views;
 
 import javax.swing.*;
-
+import java.awt.event.ActionListener;
 
 public class CreateUserView {
     private JFrame createUserF;
@@ -51,7 +51,7 @@ public class CreateUserView {
         verificationPasswordPF.setBounds(130, 130, 150, 25);
         createUserF.add(verificationPasswordPF);
 
-        // 1. NUEVOS ELEMENTOS PARA EL ROL
+        // NUEVOS ELEMENTOS PARA EL ROL
         JLabel textRolL = new JLabel("Seleccione Rol:");
         textRolL.setBounds(140, 160, 180, 25);
         createUserF.add(textRolL);
@@ -73,7 +73,7 @@ public class CreateUserView {
     public JPasswordField getVerificationPasswordPF() { return verificationPasswordPF; }
     public JTextField getCreateUserTF() { return createUserTF; }
     public JButton getBtnCreateUserL() { return btnCreateUserL; }
-    public JComboBox<String> getRolComboBox() { return rolComboBox; } // ¡NUEVO GETTER!
+    public JComboBox<String> getRolComboBox() { return rolComboBox; } 
 
     public void setVisible(boolean visible) {
         createUserF.setVisible(visible);

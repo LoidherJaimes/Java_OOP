@@ -1,63 +1,89 @@
 package clinica_vet.controllers;
 
 import clinica_vet.model.entities.User;
-import clinica_vet.model.repositories.IRolService; // Nueva Importación
+import clinica_vet.model.repositories.IRolService;
 import clinica_vet.model.repositories.UserRepository;
 import clinica_vet.views.MainWindowView;
-import clinica_vet.views.LoginView;
-import clinica_vet.views.ProfileView; 
-import clinica_vet.views.LogoutView; 
-import clinica_vet.views.ManageUsersView; 
+import clinica_vet.views.ManageUsersView;
+import clinica_vet.views.ProfileView; // Ahora es JPanel
+import clinica_vet.views.LogoutView;   // Nuevo JPanel
 
+import javax.swing.*;
 
 public class MainWindowController {
-
-    private MainWindowView mainView;
+    
+    private MainWindowView mainWindowView;
+    private User currentUser;
     private UserRepository userRepository;
-    private IRolService rolService; // Nueva dependencia
-    private boolean isAdmin; 
-    private User currentUser; 
+    private IRolService rolService;
 
-    // Constructor Modificado
-    public MainWindowController(MainWindowView mainView, User user, UserRepository userRepository, IRolService rolService) {
-        this.mainView = mainView;
+    public MainWindowController(MainWindowView mainWindowView, User currentUser, UserRepository userRepository, IRolService rolService) {
+        this.mainWindowView = mainWindowView;
+        this.currentUser = currentUser;
         this.userRepository = userRepository;
-        this.currentUser = user; 
-        this.rolService = rolService; // Asignación
+        this.rolService = rolService;
 
-        // Determinar si es admin
-        isAdmin = user.getRol() != null && user.getRol().getName().equalsIgnoreCase("Administrador");
+        setupListeners();
+        mainWindowView.setContent(mainWindowView.getWelcomeView());
+    }
 
-        // Mostrar u ocultar botón de Gestión de Usuarios
-        mainView.getBtnUsers().setVisible(isAdmin);
-        
-        // --- Lógica del botón Profile ---
-        this.mainView.getBtnProfile().addActionListener(e -> {
-            ProfileView profileView = new ProfileView(this.currentUser); 
-            profileView.setVisible(true);
+    private void setupListeners() {
+        // ⭐ Listener para Perfil (Carga la vista en el panel central)
+        mainWindowView.getBtnProfile().addActionListener(e -> {
+            loadProfileView();
+        });
+
+        // ⭐ Listener para Cerrar Sesión (Carga la vista de confirmación en el panel central)
+        mainWindowView.getBtnLogout().addActionListener(e -> {
+            loadLogoutView();
+        });
+
+        // Listener para Gestión de Usuarios
+        mainWindowView.getBtnUsers().addActionListener(e -> {
+            loadManageUsersView();
         });
         
-        // --- Logout ---
-        this.mainView.getBtnLogout().addActionListener(e -> {
-            LogoutView logoutView = new LogoutView(mainView);
-            logoutView.setVisible(true);
+        // ... (otros listeners) ...
+    }
+    
+    // --------------------------------------------------------
+    // MÉTODOS DE CARGA DE VISTAS EN EL PANEL CENTRAL
+    // --------------------------------------------------------
 
-            if (logoutView.isConfirmed()) {
-                mainView.dispose();
-                LoginView loginView = new LoginView();
-                // Volver a instanciar el LoginController con sus dependencias
-                new LoginController(loginView, userRepository, rolService); 
-                loginView.setVisible(true);
-            }
+    private void loadProfileView() {
+        ProfileView profileView = new ProfileView(currentUser);
+        mainWindowView.setContent(profileView);
+        // Opcional: Si ProfileView tuviera un botón "Volver", se le agregaría un listener aquí.
+    }
+    
+    private void loadLogoutView() {
+        LogoutView logoutView = new LogoutView();
+        mainWindowView.setContent(logoutView);
+        
+        // Configurar los listeners para la confirmación de logout
+        logoutView.getBtnYes().addActionListener(e -> {
+            // Lógica para cerrar la aplicación y volver a la vista de Login (PENDIENTE DE IMPLEMENTACIÓN)
+            mainWindowView.dispose();
+            // Asumiendo que MainApp reabre la vista de Login...
+            JOptionPane.showMessageDialog(null, "Sesión cerrada. Volviendo a la pantalla de login.");
         });
         
-        // --- Lógica de Gestión de Usuarios (CORREGIDA) ---
-        this.mainView.getBtnUsers().addActionListener(e -> {
-            ManageUsersView manageUsersView = new ManageUsersView();
-            
-            // ¡CORRECCIÓN CLAVE! Instanciar ManageUsersController y pasar RolService
-            // Esto dispara la carga de la tabla.
-            new ManageUsersController(manageUsersView, userRepository, rolService); 
+        logoutView.getBtnNo().addActionListener(e -> {
+            // Vuelve a la vista de bienvenida si cancela el cierre
+            mainWindowView.setContent(mainWindowView.getWelcomeView());
         });
     }
+
+    private void loadManageUsersView() {
+        ManageUsersView manageUsersView = new ManageUsersView();
+        new ManageUsersController(manageUsersView, userRepository, rolService, mainWindowView);
+        mainWindowView.setContent(manageUsersView);
+        
+        // Listener para el botón "Volver" dentro de ManageUsersView
+        manageUsersView.getBtnClose().addActionListener(e -> {
+            mainWindowView.setContent(mainWindowView.getWelcomeView());
+        });
+    }
+    
+    // ... (otros métodos de carga de vistas) ...
 }
