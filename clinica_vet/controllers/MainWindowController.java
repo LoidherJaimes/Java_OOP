@@ -46,12 +46,14 @@ public class MainWindowController {
             loadLogoutView();
         });
 
-        // Listener para Gestión de Usuarios
-        mainWindowView.getBtnUsers().addActionListener(e -> {
-            loadManageUsersView();
-        });
+        if (this.currentUser.getRol().toString().equals("Administrador")) {
+            // Listener para Gestión de Usuarios
+            mainWindowView.getBtnUsers().addActionListener(e -> {
+                loadManageUsersView();
+            });
+        }
         
-        // ⭐ Listener para Gestión de Dueños
+        // Listener para Gestión de Dueños
         mainWindowView.getBtnOwners().addActionListener(e -> {
             loadOwnerManagementView();
         });
@@ -87,7 +89,7 @@ public class MainWindowController {
 
     private void loadManageUsersView() {
         ManageUsersView manageUsersView = new ManageUsersView();
-        new ManageUsersController(manageUsersView, userRepository, rolService, mainWindowView);
+        ManageUsersController manageUsersController = new ManageUsersController(manageUsersView, userRepository, rolService, mainWindowView);
         mainWindowView.setContent(manageUsersView);
         
         manageUsersView.getBtnClose().addActionListener(e -> {
@@ -95,7 +97,7 @@ public class MainWindowController {
         });
     }
     
-    // ⭐ NUEVO MÉTODO DE CARGA: Gestión de Dueños
+    // MÉTODO DE CARGA: Gestión de Dueños
     private void loadOwnerManagementView() {
         OwnerManagementView ownerManagementView = new OwnerManagementView();
         
