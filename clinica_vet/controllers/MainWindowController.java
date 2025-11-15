@@ -4,11 +4,11 @@ import clinica_vet.model.entities.User;
 import clinica_vet.model.repositories.IRolService;
 import clinica_vet.model.repositories.OwnerRepository; // Importar nuevo repositorio
 import clinica_vet.model.repositories.UserRepository;
+import clinica_vet.views.LogoutView;
 import clinica_vet.views.MainWindowView;
 import clinica_vet.views.ManageUsersView;
 import clinica_vet.views.OwnerManagementView;
 import clinica_vet.views.ProfileView;
-import clinica_vet.views.LogoutView;
 
 
 
@@ -18,7 +18,7 @@ public class MainWindowController {
     private User currentUser;
     private UserRepository userRepository;
     private IRolService rolService;
-    private OwnerRepository ownerRepository; // ⭐ NUEVO REPOSITORIO
+    private OwnerRepository ownerRepository;
     private final Runnable onLogoutAction; 
 
     // ⭐ CONSTRUCTOR COMPLETO: Ahora incluye OwnerRepository
@@ -28,7 +28,7 @@ public class MainWindowController {
         this.currentUser = currentUser;
         this.userRepository = userRepository;
         this.rolService = rolService;
-        this.ownerRepository = ownerRepository; // Asignar
+        this.ownerRepository = ownerRepository;
         this.onLogoutAction = onLogoutAction;
         
         setupListeners();
@@ -102,7 +102,7 @@ public class MainWindowController {
         OwnerManagementView ownerManagementView = new OwnerManagementView();
         
         // Instanciar el controlador, pasando el OwnerRepository y la ventana principal
-        new OwnerManagementController(ownerManagementView, ownerRepository, mainWindowView);
+        OwnerManagementController ownerManagementController = new OwnerManagementController(ownerManagementView, ownerRepository, mainWindowView);
         
         // Establecer el JPanel de la vista en el área central
         mainWindowView.setContent(ownerManagementView);
