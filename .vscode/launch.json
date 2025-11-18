@@ -9,6 +9,13 @@
             "name": "App",
             "request": "launch",
             "mainClass": "clinica_vet.app.App",
+            "projectName": "Java_OOP_b3a306e"
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "clinica_vet.app.App",
             "projectName": "Java_OOP_1f153f8e"
         },
         {
