@@ -8,8 +8,17 @@ public class User {
     private String password;
     private Rol rol;
 
-    public User(int id, String username, String password, Rol rol) {
+    // Constructor de CREACIÓN (Genera UUID automáticamente al crear)
+    public User(String username, String password, Rol rol) {
         this.id = UUID.randomUUID();
+        this.username = username;
+        this.password = password;
+        this.rol = rol;
+    }
+    
+    // Constructor para CARGA (Con ID existente)
+    public User(UUID id, String username, String password, Rol rol) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.rol = rol;

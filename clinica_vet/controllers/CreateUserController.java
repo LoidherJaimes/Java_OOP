@@ -62,7 +62,7 @@ public class CreateUserController {
             }
             
             // Crear nuevo usuario
-            User newUser = new User(0, username, password, selectedRol); 
+            User newUser = new User(username, password, selectedRol); 
             userRepository.addUser(newUser);
 
             JOptionPane.showMessageDialog(createUserView.getCreateUserF(), 

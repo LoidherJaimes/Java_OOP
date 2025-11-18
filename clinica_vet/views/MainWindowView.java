@@ -92,7 +92,7 @@ public class MainWindowView extends JFrame {
         sideMenu.add(btnPayments);
         sideMenu.add(btnOwners);
         sideMenu.add(btnPets);
-        sideMenu.add(btnAgenda);
+        
     }
 
     private void createContentView() {
@@ -149,9 +149,6 @@ public class MainWindowView extends JFrame {
     public JButton getBtnAppointment() { return btnAppointment; }
     public JButton getBtnHistory() { return btnHistory; }
     public JButton getBtnPayments() { return btnPayments; }
-
-    // 🔹 Getters nuevos
     public JButton getBtnOwners() { return btnOwners; }
     public JButton getBtnPets() { return btnPets; }
-    public JButton getBtnAgenda() { return btnAgenda; }
 }

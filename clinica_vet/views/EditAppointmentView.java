@@ -1,0 +1,241 @@
+package clinica_vet.views;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class EditAppointmentView extends JDialog {
+
+    private JComboBox<String> petCombo;
+    private JComboBox<String> doctorCombo;
+    private JSpinner dateSpinner;
+    private JSpinner timeSpinner;
+    private JSpinner durationSpinner;
+    private JTextArea reasonTextArea;
+    private JComboBox<String> statusCombo;
+    
+    private JButton btnUpdate;
+    private JButton btnCancel;
+    
+    private String appointmentId; // Store UUID for editing
+
+    public EditAppointmentView(JFrame parent) {
+        super(parent, "Editar Cita", true);
+        
+        setSize(500, 600);
+        setLocationRelativeTo(parent);
+        setResizable(false);
+        setLayout(new BorderLayout(10, 10));
+
+        // Main panel
+        JPanel mainPanel = createMainPanel();
+        add(mainPanel, BorderLayout.CENTER);
+
+        // Button panel
+        JPanel buttonPanel = createButtonPanel();
+        add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private JPanel createMainPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.setBackground(Color.WHITE);
+
+        // Title
+        JLabel titleLabel = new JLabel("Editar Cita");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        titleLabel.setForeground(new Color(70, 130, 180));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(titleLabel);
+        panel.add(Box.createVerticalStrut(20));
+
+        // Pet selection
+        petCombo = new JComboBox<>();
+        panel.add(createFieldPanel("Mascota:", petCombo));
+        panel.add(Box.createVerticalStrut(15));
+
+        // Doctor selection
+        doctorCombo = new JComboBox<>();
+        panel.add(createFieldPanel("Médico:", doctorCombo));
+        panel.add(Box.createVerticalStrut(15));
+
+        // Date selection
+        SpinnerDateModel dateModel = new SpinnerDateModel();
+        dateSpinner = new JSpinner(dateModel);
+        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateSpinner, "dd/MM/yyyy");
+        dateSpinner.setEditor(dateEditor);
+        panel.add(createFieldPanel("Fecha:", dateSpinner));
+        panel.add(Box.createVerticalStrut(15));
+
+        // Time selection
+        SpinnerDateModel timeModel = new SpinnerDateModel();
+        timeSpinner = new JSpinner(timeModel);
+        JSpinner.DateEditor timeEditor = new JSpinner.DateEditor(timeSpinner, "HH:mm");
+        timeSpinner.setEditor(timeEditor);
+        panel.add(createFieldPanel("Hora:", timeSpinner));
+        panel.add(Box.createVerticalStrut(15));
+
+        // Duration selection
+        SpinnerNumberModel durationModel = new SpinnerNumberModel(30, 15, 240, 15);
+        durationSpinner = new JSpinner(durationModel);
+        panel.add(createFieldPanel("Duración (minutos):", durationSpinner));
+        panel.add(Box.createVerticalStrut(15));
+
+        // Reason text area
+        JLabel reasonLabel = new JLabel("Motivo de la consulta:");
+        reasonLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        reasonLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(reasonLabel);
+        panel.add(Box.createVerticalStrut(5));
+
+        reasonTextArea = new JTextArea(4, 30);
+        reasonTextArea.setLineWrap(true);
+        reasonTextArea.setWrapStyleWord(true);
+        reasonTextArea.setFont(new Font("Arial", Font.PLAIN, 13));
+        reasonTextArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        JScrollPane reasonScroll = new JScrollPane(reasonTextArea);
+        reasonScroll.setAlignmentX(Component.LEFT_ALIGNMENT);
+        panel.add(reasonScroll);
+        panel.add(Box.createVerticalStrut(15));
+
+        // Status selection
+        statusCombo = new JComboBox<>(new String[]{"Pendiente", "Confirmada", "Cancelada", "Completada"});
+        panel.add(createFieldPanel("Estado:", statusCombo));
+
+        return panel;
+    }
+
+    private JPanel createFieldPanel(String labelText, JComponent component) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(Color.WHITE);
+        panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font("Arial", Font.BOLD, 14));
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        component.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        component.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        panel.add(label);
+        panel.add(Box.createVerticalStrut(5));
+        panel.add(component);
+
+        return panel;
+    }
+
+    private JPanel createButtonPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
+        panel.setBackground(Color.WHITE);
+
+        btnUpdate = new JButton("Actualizar");
+        btnCancel = new JButton("Cancelar");
+
+        styleButton(btnUpdate, new Color(70, 130, 180));
+        styleButton(btnCancel, new Color(220, 20, 60));
+
+        panel.add(btnUpdate);
+        panel.add(btnCancel);
+
+        return panel;
+    }
+
+    private void styleButton(JButton button, Color bgColor) {
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(130, 35));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+
+    // Methods to populate combos
+    public void loadPets(java.util.List<String> pets) {
+        petCombo.removeAllItems();
+        for (String pet : pets) {
+            petCombo.addItem(pet);
+        }
+    }
+
+    public void loadDoctors(java.util.List<String> doctors) {
+        doctorCombo.removeAllItems();
+        for (String doctor : doctors) {
+            doctorCombo.addItem(doctor);
+        }
+    }
+
+    // Getters
+    public String getSelectedPet() {
+        return (String) petCombo.getSelectedItem();
+    }
+
+    public String getSelectedDoctor() {
+        return (String) doctorCombo.getSelectedItem();
+    }
+
+    public java.util.Date getSelectedDate() {
+        return (java.util.Date) dateSpinner.getValue();
+    }
+
+    public java.util.Date getSelectedTime() {
+        return (java.util.Date) timeSpinner.getValue();
+    }
+
+    public int getDuration() {
+        return (Integer) durationSpinner.getValue();
+    }
+
+    public String getReason() {
+        return reasonTextArea.getText().trim();
+    }
+
+    public String getSelectedStatus() {
+        return (String) statusCombo.getSelectedItem();
+    }
+
+    public JButton getBtnUpdate() {
+        return btnUpdate;
+    }
+
+    public JButton getBtnCancel() {
+        return btnCancel;
+    }
+
+    // Setters for loading appointment data
+    public void setSelectedPet(String pet) {
+        petCombo.setSelectedItem(pet);
+    }
+
+    public void setSelectedDoctor(String doctor) {
+        doctorCombo.setSelectedItem(doctor);
+    }
+
+    public void setDate(java.util.Date date) {
+        dateSpinner.setValue(date);
+    }
+
+    public void setTime(java.util.Date time) {
+        timeSpinner.setValue(time);
+    }
+
+    public void setDuration(int minutes) {
+        durationSpinner.setValue(minutes);
+    }
+
+    public void setReason(String reason) {
+        reasonTextArea.setText(reason);
+    }
+
+    public void setStatus(String status) {
+        statusCombo.setSelectedItem(status);
+    }
+
+    public void setAppointmentId(String id) {
+        this.appointmentId = id;
+    }
+
+    public String getAppointmentId() {
+        return appointmentId;
+    }
+}

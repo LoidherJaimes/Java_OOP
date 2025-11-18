@@ -5,44 +5,38 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.UUID;
 
-// ⭐ Ahora extiende JPanel
-public class ManageUsersView extends JPanel {
+public class PetManagementView extends JPanel { 
 
     private JTable table;
     private DefaultTableModel tableModel;
-
-    // Botones
     private JButton btnEdit;
     private JButton btnDelete;
-    private JButton btnClose; 
+    private JButton btnClose;
     private JButton btnCreate;
 
-    public ManageUsersView() {
+    public PetManagementView() {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(780, 550)); 
+        
+        // Título
+        JLabel title = new JLabel("Gestión de Mascotas", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 20));
+        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        add(title, BorderLayout.NORTH);
 
-        // ⭐ PANEL SUPERIOR CON TÍTULO
-        JLabel titleLabel = new JLabel("Manejo de Usuarios", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(15, 0, 15, 0));
-        add(titleLabel, BorderLayout.NORTH);
-
-        // Modelo de tabla
-        tableModel = new DefaultTableModel(new Object[]{"ID", "Usuario", "Password", "Rol"}, 0);
+        // Modelo de tabla (Añadido 'Nombre', 'Especie', 'Raza', 'Edad', 'Peso')
+        String[] columnNames = {"ID", "Nombre", "Especie", "Raza", "Edad", "Sexo", "Peso (Kg)"};
+        tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
-        table.setRowHeight(24);
-        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 13));
 
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Panel de botones inferior
-        JPanel buttonPanel = new JPanel();
+        // Panel de botones
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 15, 10));
 
-        btnCreate = new JButton("Crear");
+        btnCreate = new JButton("Crear Mascota");
         btnEdit = new JButton("Modificar");
         btnDelete = new JButton("Eliminar");
         btnClose = new JButton("Volver al Menú Principal");
@@ -55,16 +49,15 @@ public class ManageUsersView extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    // Limpiar tabla
+    // Métodos para interactuar con la tabla
     public void clearTable() {
         tableModel.setRowCount(0);
     }
 
-    // Agregar fila a tabla
-    public void addUserToTable(UUID id, String username, String password, Object rol) {
-        tableModel.addRow(new Object[]{id, username, password, rol});
+    public void addPetToTable(UUID id, String name, String species, String race, double age, String sex, double weight) {
+        tableModel.addRow(new Object[]{id, name, species, race, age, sex, weight});
     }
-
+    
     // Getters
     public JTable getTable() { return table; }
     public JButton getBtnCreate() { return btnCreate; }

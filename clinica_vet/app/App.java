@@ -2,21 +2,31 @@ package clinica_vet.app;
 
 import clinica_vet.controllers.LoginController;
 import clinica_vet.controllers.MainWindowController;
+import clinica_vet.model.entities.Appointment;
+import clinica_vet.model.entities.AppointmentStatus;
 import clinica_vet.model.entities.Owner;
+import clinica_vet.model.entities.Pet;
 import clinica_vet.model.entities.Rol;
+import clinica_vet.model.entities.Sex;
 import clinica_vet.model.entities.User;
 import clinica_vet.model.repositories.*;
 import clinica_vet.views.LoginView;
 import clinica_vet.views.MainWindowView;
 
-import javax.swing.SwingUtilities;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 
+import javax.swing.SwingUtilities;
 
 public class App {
     
     private IRolService rolService; 
     private UserRepository userRepository;
     private OwnerRepository ownerRepository;
+    private PetRepository petRepository;
+    private IAppointmentRepository appointmentRepository;
+    private AppointmentService appointmentService;
     private LoginView loginView;
 
     public App() {
@@ -24,31 +34,116 @@ public class App {
         this.rolService = new RolService(rolRepository); 
         this.userRepository = new UserRepository();
         this.ownerRepository = new OwnerRepository();
+        this.petRepository = new PetRepository();
+        this.appointmentRepository = new AppointmentRepository();
+        this.appointmentService = new AppointmentService(appointmentRepository);
         
         initializeData();
     }
     
     private void initializeData() {
+        // --- Roles por defecto ---
         if (rolService.getAllRoles().isEmpty()) {
             rolService.addRol("Administrador");
             rolService.addRol("Auxiliar");
             rolService.addRol("Veterinario");
         }
 
+        // --- Usuarios por defecto ---
         if (userRepository.getAllUsers().isEmpty()) {
             Rol rolAdmin = rolService.getRolByName("Administrador");
             Rol rolAux = rolService.getRolByName("Auxiliar");
+            Rol rolVet = rolService.getRolByName("Veterinario");
             
-            User admin = new User(1, "admin", "1234", rolAdmin);
-            User aux = new User(2, "aux", "1234", rolAux);
+            User admin = new User("admin", "1", rolAdmin);
+            User aux = new User("aux", "1", rolAux);
+            User vet1 = new User("Dr. García", "1", rolVet);
+            User vet2 = new User("Dra. Martínez", "1", rolVet);
             
             userRepository.addUser(admin);
             userRepository.addUser(aux);
+            userRepository.addUser(vet1);
+            userRepository.addUser(vet2);
         }
-        
+
+        // --- Dueños por defecto ---
         if (ownerRepository.getAllOwners().isEmpty()) {
             ownerRepository.addOwner(new Owner("Juan Pérez", "555-1234", "Calle 10 #5-20"));
             ownerRepository.addOwner(new Owner("Ana Gómez", "555-5678", "Av. Principal 45"));
+        }
+
+        // --- Mascotas por defecto ---
+        if (petRepository.getAllPets().isEmpty()) {
+            Pet pet1 = new Pet(
+                "Firulais",
+                "Perro",
+                "Labrador",
+                3,
+                Sex.MALE,
+                25,
+                "Muy juguetón",
+                Arrays.asList("Rabia", "Parvovirus"),
+                Collections.singletonList("Ninguna")
+            );
+
+            Pet pet2 = new Pet(
+                "Misu",
+                "Gato",
+                "Siames",
+                2,
+                Sex.FEMALE,
+                5,
+                "Le gusta dormir mucho",
+                Arrays.asList("Triple felina"),
+                Arrays.asList("Polvo")
+            );
+
+            petRepository.addPet(pet1);
+            petRepository.addPet(pet2);
+            
+            // --- Citas de prueba ---
+            // Obtener veterinarios
+            User vet1 = userRepository.getAllUsers().stream()
+                .filter(u -> u.getUsername().equals("Dr. García"))
+                .findFirst()
+                .orElse(null);
+                
+            User vet2 = userRepository.getAllUsers().stream()
+                .filter(u -> u.getUsername().equals("Dra. Martínez"))
+                .findFirst()
+                .orElse(null);
+            
+            if (vet1 != null && vet2 != null) {
+                // Cita 1: Mañana a las 10:00 con Dr. García
+                Appointment appointment1 = new Appointment();
+                appointment1.setDateTime(LocalDateTime.now().plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0));
+                appointment1.setPet(pet1);
+                appointment1.setDoctor(vet1);
+                appointment1.setReason("Vacunación anual y chequeo general");
+                appointment1.setStatus(AppointmentStatus.CONFIRMED);
+                appointment1.setDurationMinutes(30);
+                appointmentService.createAppointment(appointment1);
+                
+                // Cita 2: Mañana a las 11:00 con Dra. Martínez
+                Appointment appointment2 = new Appointment();
+                appointment2.setDateTime(LocalDateTime.now().plusDays(1).withHour(11).withMinute(0).withSecond(0).withNano(0));
+                appointment2.setPet(pet2);
+                appointment2.setDoctor(vet2);
+                appointment2.setReason("Control de peso y revisión de alergias");
+                appointment2.setStatus(AppointmentStatus.PENDING);
+                appointment2.setDurationMinutes(45);
+                appointmentService.createAppointment(appointment2);
+                
+                // Cita 3: En 3 días a las 15:00 con Dr. García
+                Appointment appointment3 = new Appointment();
+                appointment3.setDateTime(LocalDateTime.now().plusDays(3).withHour(15).withMinute(0).withSecond(0).withNano(0));
+                appointment3.setPet(pet1);
+                appointment3.setDoctor(vet1);
+                appointment3.setReason("Seguimiento post-vacunación");
+                appointment3.setStatus(AppointmentStatus.PENDING);
+                appointment3.setDurationMinutes(30);
+                appointmentService.createAppointment(appointment3);
+            }
         }
     }
 
@@ -58,9 +153,6 @@ public class App {
         }
         loginView = new LoginView();
         
-        // ⭐ CORRECCIÓN DE LA LLAMADA AL CONSTRUCTOR:
-        // Aseguramos que el LoginController recibe 3 argumentos: Vista, Repo, Callback (this::onLoginSuccess)
-        // LoginController ahora usa la sobrecarga con 3 argumentos.
         new LoginController(loginView, userRepository, this::onLoginSuccess); 
         loginView.setVisible(true);
     }
@@ -71,8 +163,16 @@ public class App {
         
         Runnable onLogoutAction = this::startApplication;
         
-        // ⭐ CONSTRUCTOR COMPLETO DE MAINWINDOWCONTROLLER: 6 argumentos
-        new MainWindowController(mainWindowView, user, userRepository, rolService, ownerRepository, onLogoutAction); 
+        new MainWindowController(
+            mainWindowView, 
+            user, 
+            userRepository, 
+            rolService, 
+            ownerRepository, 
+            petRepository,
+            appointmentService,
+            onLogoutAction
+        ); 
         
         mainWindowView.setVisible(true);
     }

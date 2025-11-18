@@ -1,34 +1,45 @@
 package clinica_vet.controllers;
 
 import clinica_vet.model.entities.User;
+import clinica_vet.model.repositories.AppointmentService;
 import clinica_vet.model.repositories.IRolService;
-import clinica_vet.model.repositories.OwnerRepository; // Importar nuevo repositorio
+import clinica_vet.model.repositories.OwnerRepository;
+import clinica_vet.model.repositories.PetRepository;
 import clinica_vet.model.repositories.UserRepository;
+import clinica_vet.views.AppointmentsView;
 import clinica_vet.views.MainWindowView;
 import clinica_vet.views.ManageUsersView;
 import clinica_vet.views.OwnerManagementView;
-import clinica_vet.views.ProfileView;
-import clinica_vet.views.LogoutView;
+import clinica_vet.views.PetManagementView;
 
-
+import javax.swing.*;
 
 public class MainWindowController {
     
-    private MainWindowView mainWindowView;
-    private User currentUser;
-    private UserRepository userRepository;
-    private IRolService rolService;
-    private OwnerRepository ownerRepository; // ⭐ NUEVO REPOSITORIO
-    private final Runnable onLogoutAction; 
+    private final MainWindowView mainWindowView;
+    private final User currentUser;
+    private final UserRepository userRepository;
+    private final IRolService rolService;
+    private final OwnerRepository ownerRepository;
+    private final PetRepository petRepository;
+    private final AppointmentService appointmentService;
+    private final Runnable onLogoutAction;
 
-    // ⭐ CONSTRUCTOR COMPLETO: Ahora incluye OwnerRepository
-    public MainWindowController(MainWindowView mainWindowView, User currentUser, UserRepository userRepository, 
-                                IRolService rolService, OwnerRepository ownerRepository, Runnable onLogoutAction) { 
+    public MainWindowController(MainWindowView mainWindowView, 
+                               User currentUser, 
+                               UserRepository userRepository, 
+                               IRolService rolService, 
+                               OwnerRepository ownerRepository, 
+                               PetRepository petRepository,
+                               AppointmentService appointmentService,
+                               Runnable onLogoutAction) {
         this.mainWindowView = mainWindowView;
         this.currentUser = currentUser;
         this.userRepository = userRepository;
         this.rolService = rolService;
-        this.ownerRepository = ownerRepository; // Asignar
+        this.ownerRepository = ownerRepository;
+        this.petRepository = petRepository;
+        this.appointmentService = appointmentService;
         this.onLogoutAction = onLogoutAction;
         
         setupListeners();
@@ -36,75 +47,51 @@ public class MainWindowController {
     }
 
     private void setupListeners() {
-        // Listener para Perfil (Carga la vista en el panel central)
-        mainWindowView.getBtnProfile().addActionListener(e -> {
-            loadProfileView();
-        });
+        // Botón de logout
+        this.mainWindowView.getBtnLogout().addActionListener(e -> onLogoutAction.run());
 
-        // Listener para Cerrar Sesión (Carga la vista de confirmación)
-        mainWindowView.getBtnLogout().addActionListener(e -> {
-            loadLogoutView();
-        });
+        // Botón Usuarios
+        this.mainWindowView.getBtnUsers().addActionListener(e -> loadUserManagementView());
 
-        if (this.currentUser.getRol().toString().equals("Administrador")) {
-            // Listener para Gestión de Usuarios
-            mainWindowView.getBtnUsers().addActionListener(e -> {
-                loadManageUsersView();
-            });
-        }
+        // Botón Dueños
+        this.mainWindowView.getBtnOwners().addActionListener(e -> loadOwnerManagementView());
+
+        // Botón Mascotas
+        this.mainWindowView.getBtnPets().addActionListener(e -> loadPetManagementView());
         
-        // Listener para Gestión de Dueños
-        mainWindowView.getBtnOwners().addActionListener(e -> {
-            loadOwnerManagementView();
-        });
-        
-        // TODO: Agregar listeners para los demás botones (Pets, Agenda, etc.)
+        // Botón Citas (NUEVO)
+        this.mainWindowView.getBtnAppointment().addActionListener(e -> loadAppointmentsView());
     }
     
-    // --------------------------------------------------------
-    // MÉTODOS DE CARGA DE VISTAS EN EL PANEL CENTRAL
-    // --------------------------------------------------------
-
-    private void loadProfileView() {
-        ProfileView profileView = new ProfileView(currentUser);
-        mainWindowView.setContent(profileView);
-    }
+    // --- Métodos para cargar vistas ---
     
-    private void loadLogoutView() {
-        LogoutView logoutView = new LogoutView();
-        mainWindowView.setContent(logoutView);
-        
-        logoutView.getBtnYes().addActionListener(e -> {
-            // 1. Destruir la ventana principal
-            mainWindowView.dispose(); 
-            // 2. Ejecutar la acción inyectada que abre el Login
-            onLogoutAction.run(); 
-        });
-        
-        logoutView.getBtnNo().addActionListener(e -> {
-            // Vuelve a la vista de bienvenida si cancela el cierre
-            mainWindowView.setContent(mainWindowView.getWelcomeView());
-        });
-    }
-
-    private void loadManageUsersView() {
+    private void loadUserManagementView() {
         ManageUsersView manageUsersView = new ManageUsersView();
-        ManageUsersController manageUsersController = new ManageUsersController(manageUsersView, userRepository, rolService, mainWindowView);
+        new ManageUsersController(manageUsersView, userRepository, rolService, mainWindowView); 
         mainWindowView.setContent(manageUsersView);
-        
-        manageUsersView.getBtnClose().addActionListener(e -> {
-            mainWindowView.setContent(mainWindowView.getWelcomeView());
-        });
     }
     
-    // MÉTODO DE CARGA: Gestión de Dueños
     private void loadOwnerManagementView() {
         OwnerManagementView ownerManagementView = new OwnerManagementView();
-        
-        // Instanciar el controlador, pasando el OwnerRepository y la ventana principal
         new OwnerManagementController(ownerManagementView, ownerRepository, mainWindowView);
-        
-        // Establecer el JPanel de la vista en el área central
         mainWindowView.setContent(ownerManagementView);
+    }
+    
+    private void loadPetManagementView() {
+        PetManagementView petManagementView = new PetManagementView();
+        new PetController(petManagementView, petRepository, ownerRepository, mainWindowView);
+        mainWindowView.setContent(petManagementView);
+    }
+    
+    private void loadAppointmentsView() {
+        AppointmentsView appointmentsView = new AppointmentsView();
+        new AppointmentsController(
+            appointmentsView,
+            appointmentService,
+            petRepository,
+            userRepository,
+            (JFrame) SwingUtilities.getWindowAncestor(mainWindowView)
+        );
+        mainWindowView.setContent(appointmentsView);
     }
 }
