@@ -14,11 +14,10 @@ public class Pet {
     private String observations;
     private List<String> vaccinnes;
     private List<String> allergies;
-    private Owner owner; // NUEVO: Relación con Owner
+    private Owner owner;
 
     public Pet() {}
 
-    // Constructor de CREACIÓN (sin Owner)
     public Pet(String name, String species, String race, double age, Sex sex, double weight, 
                String observations, List<String> vaccinnes, List<String> allergies) {
         this.id = UUID.randomUUID();
