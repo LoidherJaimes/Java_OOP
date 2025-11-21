@@ -145,9 +145,24 @@ public class EditPetView extends JDialog {
         nameTF.setText(petToEdit.getName());
         speciesTF.setText(petToEdit.getSpecies());
         raceTF.setText(petToEdit.getRace());
-        ageTF.setText(String.valueOf(petToEdit.getAge()));
+        
+        double age = petToEdit.getAge();
+        if (age == (int) age) {
+            ageTF.setText(String.valueOf((int) age));
+        } else {
+            ageTF.setText(String.valueOf(age));
+        }
+
         sexCB.setSelectedItem(petToEdit.getSex());
-        weightTF.setText(String.valueOf(petToEdit.getWeight()));
+
+        double weight = petToEdit.getWeight();
+        if(weight == (int) weight)
+        {
+            weightTF.setText(String.valueOf((int) weight));
+        } else {
+            weightTF.setText(String.valueOf(weight));
+        }
+
         observationsTA.setText(petToEdit.getObservations());
         
         // Preseleccionar el dueño actual

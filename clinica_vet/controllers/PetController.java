@@ -45,7 +45,7 @@ public class PetController {
             petManagementView.addPetToTable(
                 pet.getId(),
                 pet.getName(),
-                ownerName,          // Dueño en posición correcta
+                ownerName,
                 pet.getSpecies(),
                 pet.getRace(),
                 pet.getAge(),
@@ -56,10 +56,8 @@ public class PetController {
     }
 
     private void showCreatePetDialog() {
-        // Obtener lista de dueños disponibles
         List<Owner> availableOwners = ownerRepository.getAllOwners();
         
-        // Pasar la lista de dueños a la vista
         CreatePetView createView = new CreatePetView(mainView, availableOwners);
         
         createView.getBtnSave().addActionListener(e -> {
@@ -181,8 +179,8 @@ public class PetController {
                 double weight;
 
                 try {
-                    age = Integer.parseInt(ageText);
-                    weight = Double.parseDouble(weightText);
+                    age = Integer.parseInt(ageText.trim());
+                    weight = Double.parseDouble(weightText.trim());
                 } catch (NumberFormatException nfe) {
                     JOptionPane.showMessageDialog(editView,
                             "Edad y peso deben ser valores numéricos válidos.",
