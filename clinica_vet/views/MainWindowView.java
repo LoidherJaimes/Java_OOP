@@ -67,15 +67,15 @@ public class MainWindowView extends JFrame {
         sideMenu.setBackground(new Color(245, 245, 245));
         sideMenu.setPreferredSize(new Dimension(220, 0));
 
-        btnUsers = new JButton("👥 Gestión de Usuarios");
-        btnAppointment = new JButton("📅 Agendar Citas");
-        btnHistory = new JButton("📖 Historia Clínica");
-        btnPayments = new JButton("💳 Facturación y Pagos");
+        btnUsers = new JButton("Gestión de Usuarios");
+        btnAppointment = new JButton("Agendar Citas");
+        btnHistory = new JButton("Historia Clínica");
+        btnPayments = new JButton("Facturación y Pagos");
 
         // 🔹 Nuevos botones
-        btnOwners = new JButton("🧍‍♂️ Gestión de Dueños");
-        btnPets = new JButton("🐶 Gestión de Mascotas");
-        btnAgenda = new JButton("🗓️ Agenda de Citas");
+        btnOwners = new JButton("Gestión de Dueños");
+        btnPets = new JButton("Gestión de Mascotas");
+        btnAgenda = new JButton("Agenda de Citas");
 
         styleMenuButton(btnUsers);
         styleMenuButton(btnAppointment);

@@ -72,7 +72,7 @@ public class CreateAppointmentController {
         
         // Load doctors from repository
         availableDoctors = userRepository.getAllUsers().stream()
-            .filter(u -> u.getRol() != null && u.getRol().getName().equalsIgnoreCase("Medico"))
+            .filter(u -> u.getRol() != null && u.getRol().getName().equalsIgnoreCase("Veterinario"))
             .collect(Collectors.toList());
             
         if (availableDoctors.isEmpty()) {

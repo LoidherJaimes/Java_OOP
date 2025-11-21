@@ -1,42 +1,52 @@
 package clinica_vet.views;
 
+import clinica_vet.model.entities.Owner;
 import clinica_vet.model.entities.Sex;
-import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import javax.swing.*;
 
 public class CreatePetView extends JDialog {
 
     private JTextField nameTF;
     private JTextField speciesTF;
     private JTextField raceTF;
-    private JTextField ageTF;     // 🔹 Cambiado de JSpinner a JTextField
+    private JTextField ageTF;
     private JComboBox<Sex> sexCB;
-    private JTextField weightTF;  // 🔹 Cambiado de JSpinner a JTextField
+    private JTextField weightTF;
     private JTextArea observationsTA;
     private JList<String> vaccinesList;
     private JList<String> allergiesList;
+    private JComboBox<Owner> ownerCB;
     private JButton btnSave;
     private JButton btnCancel;
     
     private final String[] dummyVaccines = {"Rabia", "Parvovirus", "Moquillo"};
     private final String[] dummyAllergies = {"Polen", "Grasas", "Penicilina"};
 
-    public CreatePetView(JFrame owner) {
+    public CreatePetView(JFrame owner, List<Owner> availableOwners) {
         super(owner, "Crear Nueva Mascota", true);
         setupDialog();
-        createComponents();
+        createComponents(availableOwners);
         btnCancel.addActionListener(e -> dispose());
     }
 
+    public CreatePetView(MainWindowView owner, List<Owner> availableOwners) {
+        super((JFrame) SwingUtilities.getWindowAncestor(owner), "Crear Nueva Mascota", true);
+        setupDialog();
+        createComponents(availableOwners);
+        btnCancel.addActionListener(e -> dispose());
+    }
+
+
     private void setupDialog() {
-        setSize(600, 700);
+        setSize(600, 750);
         setLayout(new BorderLayout(10, 10));
         setLocationRelativeTo(getOwner());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
-    private void createComponents() {
+    private void createComponents(List<Owner> availableOwners) {
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         JScrollPane scrollPane = new JScrollPane(formPanel);
@@ -53,6 +63,28 @@ public class CreatePetView extends JDialog {
         nameTF = new JTextField(20);
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(nameTF, gbc);
 
+        // Dueño (ComboBox)
+        gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Dueño:"), gbc);
+        ownerCB = new JComboBox<>();
+        ownerCB.addItem(null); // Opción "Sin dueño"
+        for (Owner o : availableOwners) {
+            ownerCB.addItem(o);
+        }
+        ownerCB.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, 
+                    int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value == null) {
+                    setText("-- Sin dueño --");
+                } else {
+                    setText(((Owner) value).getName());
+                }
+                return this;
+            }
+        });
+        gbc.gridx = 1; gbc.gridy = y++; formPanel.add(ownerCB, gbc);
+
         // Especie
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Especie:"), gbc);
         speciesTF = new JTextField(20);
@@ -63,22 +95,22 @@ public class CreatePetView extends JDialog {
         raceTF = new JTextField(20);
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(raceTF, gbc);
 
-        // Edad (ahora campo de texto)
+        // Edad
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Edad (años):"), gbc);
         ageTF = new JTextField(10);
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(ageTF, gbc);
 
-        // Sexo (ComboBox)
+        // Sexo
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Sexo:"), gbc);
         sexCB = new JComboBox<>(Sex.values());
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(sexCB, gbc);
 
-        // Peso (ahora campo de texto)
+        // Peso
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Peso (Kg):"), gbc);
         weightTF = new JTextField(10);
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(weightTF, gbc);
         
-        // Observaciones (TextArea)
+        // Observaciones
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Observaciones:"), gbc);
         observationsTA = new JTextArea(4, 20);
         JScrollPane obsScrollPane = new JScrollPane(observationsTA);
@@ -87,19 +119,19 @@ public class CreatePetView extends JDialog {
         formPanel.add(obsScrollPane, gbc);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Vacunas (JList)
+        // Vacunas
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Vacunas:"), gbc);
         vaccinesList = new JList<>(dummyVaccines);
         vaccinesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(new JScrollPane(vaccinesList), gbc);
 
-        // Alergias (JList)
+        // Alergias
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Alergias:"), gbc);
         allergiesList = new JList<>(dummyAllergies);
         allergiesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(new JScrollPane(allergiesList), gbc);
 
-        // Panel de Botones
+        // Botones
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
         btnSave = new JButton("Guardar Mascota");
         btnCancel = new JButton("Cancelar");
@@ -110,22 +142,17 @@ public class CreatePetView extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    // Métodos para obtener los datos seleccionados
-    public List<String> getSelectedVaccines() {
-        return vaccinesList.getSelectedValuesList();
-    }
-    
-    public List<String> getSelectedAllergies() {
-        return allergiesList.getSelectedValuesList();
-    }
+    public List<String> getSelectedVaccines() { return vaccinesList.getSelectedValuesList(); }
+    public List<String> getSelectedAllergies() { return allergiesList.getSelectedValuesList(); }
 
-    // 🔹 Getters actualizados
+    // Getters
     public JTextField getNameTF() { return nameTF; }
     public JTextField getSpeciesTF() { return speciesTF; }
     public JTextField getRaceTF() { return raceTF; }
-    public JTextField getAgeTF() { return ageTF; }        // 🔹 nuevo getter
+    public JTextField getAgeTF() { return ageTF; }
     public JComboBox<Sex> getSexCB() { return sexCB; }
-    public JTextField getWeightTF() { return weightTF; }  // 🔹 nuevo getter
+    public JTextField getWeightTF() { return weightTF; }
     public JTextArea getObservationsTA() { return observationsTA; }
+    public JComboBox<Owner> getOwnerCB() { return ownerCB; }
     public JButton getBtnSave() { return btnSave; }
 }

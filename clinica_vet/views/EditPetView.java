@@ -1,10 +1,11 @@
 package clinica_vet.views;
 
+import clinica_vet.model.entities.Owner;
 import clinica_vet.model.entities.Pet;
 import clinica_vet.model.entities.Sex;
-import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import javax.swing.*;
 
 public class EditPetView extends JDialog {
 
@@ -12,29 +13,33 @@ public class EditPetView extends JDialog {
     private JTextField nameTF;
     private JTextField speciesTF;
     private JTextField raceTF;
-    private JTextField ageTF; // 🔄 reemplaza spinner
+    private JTextField ageTF;
     private JComboBox<Sex> sexCB;
-    private JTextField weightTF; // 🔄 reemplaza spinner
+    private JTextField weightTF;
     private JTextArea observationsTA;
     private JList<String> vaccinesList;
     private JList<String> allergiesList;
+    private JComboBox<Owner> ownerCB;  // ComboBox para dueño
     private JButton btnSave;
     private JButton btnCancel;
     
     private final String[] dummyVaccines = {"Rabia", "Parvovirus", "Moquillo"};
     private final String[] dummyAllergies = {"Polen", "Grasas", "Penicilina"};
+    
+    private List<Owner> availableOwners;
 
-    public EditPetView(JFrame owner, Pet petToEdit) {
+    public EditPetView(JFrame owner, Pet petToEdit, List<Owner> availableOwners) {
         super(owner, "Modificar Mascota: " + petToEdit.getName(), true);
         this.petToEdit = petToEdit;
+        this.availableOwners = availableOwners;
         setupDialog();
         createComponents();
-        loadPetData(); // Cargar datos existentes
+        loadPetData();
         btnCancel.addActionListener(e -> dispose());
     }
 
     private void setupDialog() {
-        setSize(600, 700);
+        setSize(600, 750);
         setLayout(new BorderLayout(10, 10));
         setLocationRelativeTo(getOwner());
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -57,6 +62,28 @@ public class EditPetView extends JDialog {
         nameTF = new JTextField(20);
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(nameTF, gbc);
 
+        // Dueño (ComboBox)
+        gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Dueño:"), gbc);
+        ownerCB = new JComboBox<>();
+        ownerCB.addItem(null); // Opción "Sin dueño"
+        for (Owner o : availableOwners) {
+            ownerCB.addItem(o);
+        }
+        ownerCB.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, 
+                    int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value == null) {
+                    setText("-- Sin dueño --");
+                } else {
+                    setText(((Owner) value).getName());
+                }
+                return this;
+            }
+        });
+        gbc.gridx = 1; gbc.gridy = y++; formPanel.add(ownerCB, gbc);
+
         // Especie
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Especie:"), gbc);
         speciesTF = new JTextField(20);
@@ -67,22 +94,22 @@ public class EditPetView extends JDialog {
         raceTF = new JTextField(20);
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(raceTF, gbc);
 
-        // Edad (TextField)
+        // Edad
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Edad (años):"), gbc);
         ageTF = new JTextField(10);
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(ageTF, gbc);
 
-        // Sexo (ComboBox)
+        // Sexo
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Sexo:"), gbc);
         sexCB = new JComboBox<>(Sex.values());
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(sexCB, gbc);
 
-        // Peso (TextField)
+        // Peso
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Peso (Kg):"), gbc);
         weightTF = new JTextField(10);
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(weightTF, gbc);
         
-        // Observaciones (TextArea)
+        // Observaciones
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Observaciones:"), gbc);
         observationsTA = new JTextArea(4, 20);
         JScrollPane obsScrollPane = new JScrollPane(observationsTA);
@@ -91,19 +118,19 @@ public class EditPetView extends JDialog {
         formPanel.add(obsScrollPane, gbc);
         gbc.fill = GridBagConstraints.HORIZONTAL; 
 
-        // Vacunas (JList)
+        // Vacunas
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Vacunas:"), gbc);
         vaccinesList = new JList<>(dummyVaccines);
         vaccinesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(new JScrollPane(vaccinesList), gbc);
 
-        // Alergias (JList)
+        // Alergias
         gbc.gridx = 0; gbc.gridy = y; formPanel.add(new JLabel("Alergias:"), gbc);
         allergiesList = new JList<>(dummyAllergies);
         allergiesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         gbc.gridx = 1; gbc.gridy = y++; formPanel.add(new JScrollPane(allergiesList), gbc);
 
-        // Panel de Botones
+        // Botones
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
         btnSave = new JButton("Guardar Cambios");
         btnCancel = new JButton("Cancelar");
@@ -118,10 +145,13 @@ public class EditPetView extends JDialog {
         nameTF.setText(petToEdit.getName());
         speciesTF.setText(petToEdit.getSpecies());
         raceTF.setText(petToEdit.getRace());
-        ageTF.setText(String.valueOf(petToEdit.getAge())); // 🔄 conversión a texto
+        ageTF.setText(String.valueOf(petToEdit.getAge()));
         sexCB.setSelectedItem(petToEdit.getSex());
-        weightTF.setText(String.valueOf(petToEdit.getWeight())); // 🔄 conversión a texto
+        weightTF.setText(String.valueOf(petToEdit.getWeight()));
         observationsTA.setText(petToEdit.getObservations());
+        
+        // Preseleccionar el dueño actual
+        ownerCB.setSelectedItem(petToEdit.getOwner());
         
         // Cargar selecciones de listas
         setSelectedValues(vaccinesList, petToEdit.getVaccinnes());
@@ -129,6 +159,7 @@ public class EditPetView extends JDialog {
     }
     
     private void setSelectedValues(JList<String> list, List<String> selectedValues) {
+        if (selectedValues == null) return;
         ListModel<String> model = list.getModel();
         int[] indices = new int[selectedValues.size()];
         int count = 0;
@@ -137,26 +168,21 @@ public class EditPetView extends JDialog {
                 indices[count++] = i;
             }
         }
-        list.setSelectedIndices(indices);
+        list.setSelectedIndices(java.util.Arrays.copyOf(indices, count));
     }
 
-    // Métodos para obtener los datos seleccionados
-    public List<String> getSelectedVaccines() {
-        return vaccinesList.getSelectedValuesList();
-    }
-    
-    public List<String> getSelectedAllergies() {
-        return allergiesList.getSelectedValuesList();
-    }
+    public List<String> getSelectedVaccines() { return vaccinesList.getSelectedValuesList(); }
+    public List<String> getSelectedAllergies() { return allergiesList.getSelectedValuesList(); }
     
     // Getters
     public Pet getPetToEdit() { return petToEdit; }
     public JTextField getNameTF() { return nameTF; }
     public JTextField getSpeciesTF() { return speciesTF; }
     public JTextField getRaceTF() { return raceTF; }
-    public JTextField getAgeTF() { return ageTF; } // 🔄 actualizado
+    public JTextField getAgeTF() { return ageTF; }
     public JComboBox<Sex> getSexCB() { return sexCB; }
-    public JTextField getWeightTF() { return weightTF; } // 🔄 actualizado
+    public JTextField getWeightTF() { return weightTF; }
     public JTextArea getObservationsTA() { return observationsTA; }
+    public JComboBox<Owner> getOwnerCB() { return ownerCB; }  // Getter del ComboBox
     public JButton getBtnSave() { return btnSave; }
 }

@@ -1,9 +1,9 @@
 package clinica_vet.views;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.UUID;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class PetManagementView extends JPanel { 
 
@@ -24,8 +24,8 @@ public class PetManagementView extends JPanel {
         title.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         add(title, BorderLayout.NORTH);
 
-        // Modelo de tabla (Añadido 'Nombre', 'Especie', 'Raza', 'Edad', 'Peso')
-        String[] columnNames = {"ID", "Nombre", "Especie", "Raza", "Edad", "Sexo", "Peso (Kg)"};
+        // Columnas: ID, Nombre, Dueño, Especie, Raza, Edad, Sexo, Peso
+        String[] columnNames = {"ID", "Nombre", "Dueño", "Especie", "Raza", "Edad", "Sexo", "Peso (Kg)"};
         tableModel = new DefaultTableModel(columnNames, 0);
         table = new JTable(tableModel);
 
@@ -49,13 +49,14 @@ public class PetManagementView extends JPanel {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    // Métodos para interactuar con la tabla
     public void clearTable() {
         tableModel.setRowCount(0);
     }
 
-    public void addPetToTable(UUID id, String name, String species, String race, double age, String sex, double weight) {
-        tableModel.addRow(new Object[]{id, name, species, race, age, sex, weight});
+    // Orden corregido: ID, Nombre, Dueño, Especie, Raza, Edad, Sexo, Peso
+    public void addPetToTable(UUID id, String name, String ownerName, String species, 
+                               String race, double age, String sex, double weight) {
+        tableModel.addRow(new Object[]{id, name, ownerName, species, race, age, sex, weight});
     }
     
     // Getters

@@ -12,11 +12,9 @@ import clinica_vet.model.entities.User;
 import clinica_vet.model.repositories.*;
 import clinica_vet.views.LoginView;
 import clinica_vet.views.MainWindowView;
-
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-
 import javax.swing.SwingUtilities;
 
 public class App {
@@ -66,12 +64,6 @@ public class App {
             userRepository.addUser(vet2);
         }
 
-        // --- Dueños por defecto ---
-        if (ownerRepository.getAllOwners().isEmpty()) {
-            ownerRepository.addOwner(new Owner("Juan Pérez", "555-1234", "Calle 10 #5-20"));
-            ownerRepository.addOwner(new Owner("Ana Gómez", "555-5678", "Av. Principal 45"));
-        }
-
         // --- Mascotas por defecto ---
         if (petRepository.getAllPets().isEmpty()) {
             Pet pet1 = new Pet(
@@ -97,6 +89,21 @@ public class App {
                 Arrays.asList("Triple felina"),
                 Arrays.asList("Polvo")
             );
+
+            // --- Dueños por defecto ---
+            if (ownerRepository.getAllOwners().isEmpty()) {
+                Owner owner1 = new Owner("Juan Pérez", "555-1234", "Calle 10 #5-20");
+                Owner owner2 = new Owner("Ana Gómez", "555-5678", "Av. Principal 45");
+                ownerRepository.addOwner(owner1);
+                ownerRepository.addOwner(owner2);
+                
+                owner1.addPet(pet1);
+                owner2.addPet(pet2);
+
+                pet1.setOwner(owner1);
+                pet2.setOwner(owner2);
+            }
+            
 
             petRepository.addPet(pet1);
             petRepository.addPet(pet2);

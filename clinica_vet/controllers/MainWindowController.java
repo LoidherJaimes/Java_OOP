@@ -6,26 +6,14 @@ import clinica_vet.model.repositories.IRolService;
 import clinica_vet.model.repositories.OwnerRepository;
 import clinica_vet.model.repositories.PetRepository;
 import clinica_vet.model.repositories.UserRepository;
-<<<<<<< HEAD
 import clinica_vet.views.AppointmentsView;
 import clinica_vet.views.MainWindowView;
 import clinica_vet.views.ManageUsersView;
 import clinica_vet.views.OwnerManagementView;
 import clinica_vet.views.PetManagementView;
-=======
-import clinica_vet.views.LogoutView;
-import clinica_vet.views.MainWindowView;
-import clinica_vet.views.ManageUsersView;
-import clinica_vet.views.OwnerManagementView;
-import clinica_vet.views.ProfileView;
-
->>>>>>> acdeda45760de003f7e7cedc22943db40d916557
-
 import javax.swing.*;
 
 public class MainWindowController {
-    
-<<<<<<< HEAD
     private final MainWindowView mainWindowView;
     private final User currentUser;
     private final UserRepository userRepository;
@@ -34,14 +22,6 @@ public class MainWindowController {
     private final PetRepository petRepository;
     private final AppointmentService appointmentService;
     private final Runnable onLogoutAction;
-=======
-    private MainWindowView mainWindowView;
-    private User currentUser;
-    private UserRepository userRepository;
-    private IRolService rolService;
-    private OwnerRepository ownerRepository;
-    private final Runnable onLogoutAction; 
->>>>>>> acdeda45760de003f7e7cedc22943db40d916557
 
     public MainWindowController(MainWindowView mainWindowView, 
                                User currentUser, 
@@ -56,11 +36,8 @@ public class MainWindowController {
         this.userRepository = userRepository;
         this.rolService = rolService;
         this.ownerRepository = ownerRepository;
-<<<<<<< HEAD
         this.petRepository = petRepository;
         this.appointmentService = appointmentService;
-=======
->>>>>>> acdeda45760de003f7e7cedc22943db40d916557
         this.onLogoutAction = onLogoutAction;
         
         setupListeners();
@@ -68,53 +45,38 @@ public class MainWindowController {
     }
 
     private void setupListeners() {
-        // Botón de logout
         this.mainWindowView.getBtnLogout().addActionListener(e -> onLogoutAction.run());
 
-        // Botón Usuarios
         this.mainWindowView.getBtnUsers().addActionListener(e -> loadUserManagementView());
 
-        // Botón Dueños
         this.mainWindowView.getBtnOwners().addActionListener(e -> loadOwnerManagementView());
 
-        // Botón Mascotas
         this.mainWindowView.getBtnPets().addActionListener(e -> loadPetManagementView());
         
-        // Botón Citas (NUEVO)
         this.mainWindowView.getBtnAppointment().addActionListener(e -> loadAppointmentsView());
     }
     
-    // --- Métodos para cargar vistas ---
-    
     private void loadUserManagementView() {
         ManageUsersView manageUsersView = new ManageUsersView();
-        new ManageUsersController(manageUsersView, userRepository, rolService, mainWindowView); 
+        ManageUsersController manageUsersController = new ManageUsersController(manageUsersView, userRepository, rolService, mainWindowView); 
         mainWindowView.setContent(manageUsersView);
     }
     
     private void loadOwnerManagementView() {
         OwnerManagementView ownerManagementView = new OwnerManagementView();
-<<<<<<< HEAD
-        new OwnerManagementController(ownerManagementView, ownerRepository, mainWindowView);
-=======
-        
-        // Instanciar el controlador, pasando el OwnerRepository y la ventana principal
         OwnerManagementController ownerManagementController = new OwnerManagementController(ownerManagementView, ownerRepository, mainWindowView);
-        
-        // Establecer el JPanel de la vista en el área central
->>>>>>> acdeda45760de003f7e7cedc22943db40d916557
         mainWindowView.setContent(ownerManagementView);
     }
     
     private void loadPetManagementView() {
         PetManagementView petManagementView = new PetManagementView();
-        new PetController(petManagementView, petRepository, ownerRepository, mainWindowView);
+        PetController petController = new PetController(petManagementView, petRepository, ownerRepository, mainWindowView);
         mainWindowView.setContent(petManagementView);
     }
     
     private void loadAppointmentsView() {
         AppointmentsView appointmentsView = new AppointmentsView();
-        new AppointmentsController(
+        AppointmentsController appointmentsController = new AppointmentsController(
             appointmentsView,
             appointmentService,
             petRepository,

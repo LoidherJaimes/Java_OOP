@@ -1,5 +1,7 @@
 package clinica_vet.model.entities;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Owner {
@@ -7,6 +9,8 @@ public class Owner {
     private String name;
     private String phone;
     private String address;
+    private List<Pet> pets = new ArrayList<>();
+
 
     public Owner(String name, String phone, String address) {
         this.id = UUID.randomUUID();
@@ -32,4 +36,14 @@ public class Owner {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+
+    public List<Pet> getPets() { return pets; }
+
+    public void addPet(Pet pet) {
+        if (!pets.contains(pet)) {
+            pets.add(pet);
+        }
+    }
+
+    public void removePet(Pet pet) { pets.remove(pet); }
 }

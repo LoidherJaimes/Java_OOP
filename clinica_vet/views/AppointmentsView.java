@@ -1,9 +1,8 @@
 package clinica_vet.views;
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.time.LocalDate;
 
 public class AppointmentsView extends JPanel {
 
@@ -37,19 +36,15 @@ public class AppointmentsView extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         setBackground(Color.WHITE);
 
-        // Title panel
         JPanel titlePanel = createTitlePanel();
         add(titlePanel, BorderLayout.NORTH);
-
-        // Filter panel
+        
         JPanel filterPanel = createFilterPanel();
         add(filterPanel, BorderLayout.WEST);
 
-        // Table panel
         JPanel tablePanel = createTablePanel();
         add(tablePanel, BorderLayout.CENTER);
 
-        // Button panel
         JPanel buttonPanel = createButtonPanel();
         add(buttonPanel, BorderLayout.SOUTH);
     }
@@ -58,12 +53,11 @@ public class AppointmentsView extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
-        JLabel title = new JLabel("📅 Gestión de Citas", SwingConstants.CENTER);
+        JLabel title = new JLabel("Gestión de Citas", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 24));
         title.setForeground(new Color(70, 130, 180));
         title.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
-        // View mode selector
         JPanel viewPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         viewPanel.setBackground(Color.WHITE);
         JLabel viewLabel = new JLabel("Vista:");
@@ -84,31 +78,26 @@ public class AppointmentsView extends JPanel {
         panel.setBorder(BorderFactory.createTitledBorder("Filtros"));
         panel.setPreferredSize(new Dimension(200, 0));
 
-        // Status filter
         JLabel statusLabel = new JLabel("Estado:");
         filterStatusCombo = new JComboBox<>(new String[]{
             "Todos", "Pendiente", "Confirmada", "Cancelada", "Completada"
         });
 
-        // Doctor filter
         JLabel doctorLabel = new JLabel("Médico:");
         filterDoctorCombo = new JComboBox<>();
         filterDoctorCombo.addItem("Todos los Médicos");
 
-        // Date filter
         JLabel dateLabel = new JLabel("Fecha:");
         SpinnerDateModel dateModel = new SpinnerDateModel();
         filterDateSpinner = new JSpinner(dateModel);
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(filterDateSpinner, "dd/MM/yyyy");
         filterDateSpinner.setEditor(dateEditor);
 
-        // Filter buttons
         btnApplyFilters = new JButton("Aplicar Filtros");
         btnClearFilters = new JButton("Limpiar Filtros");
         styleFilterButton(btnApplyFilters, new Color(60, 179, 113));
         styleFilterButton(btnClearFilters, new Color(220, 20, 60));
 
-        // Add components with spacing
         panel.add(Box.createVerticalStrut(10));
         panel.add(statusLabel);
         panel.add(filterStatusCombo);
@@ -131,7 +120,6 @@ public class AppointmentsView extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(Color.WHITE);
 
-        // Table model
         String[] columnNames = {"ID", "Fecha", "Hora", "Mascota", "Dueño", "Médico", "Motivo", "Duración", "Estado"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -145,7 +133,6 @@ public class AppointmentsView extends JPanel {
         appointmentsTable.setRowHeight(25);
         appointmentsTable.getTableHeader().setReorderingAllowed(false);
 
-        // Hide ID column but keep it in the model
         appointmentsTable.getColumnModel().getColumn(0).setMinWidth(0);
         appointmentsTable.getColumnModel().getColumn(0).setMaxWidth(0);
         appointmentsTable.getColumnModel().getColumn(0).setWidth(0);
@@ -162,13 +149,13 @@ public class AppointmentsView extends JPanel {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         panel.setBackground(Color.WHITE);
 
-        btnCreate = new JButton("➕ Crear");
-        btnEdit = new JButton("✏️ Editar");
-        btnCancel = new JButton("❌ Cancelar");
-        btnConfirm = new JButton("✅ Confirmar");
-        btnComplete = new JButton("✔️ Completar");
-        btnDelete = new JButton("🗑️ Eliminar");
-        btnRefresh = new JButton("🔄 Actualizar");
+        btnCreate = new JButton("Crear");
+        btnEdit = new JButton("Editar");
+        btnCancel = new JButton("Cancelar");
+        btnConfirm = new JButton("Confirmar");
+        btnComplete = new JButton("Completar");
+        btnDelete = new JButton("Eliminar");
+        btnRefresh = new JButton("Actualizar");
 
         styleActionButton(btnCreate, new Color(60, 179, 113));
         styleActionButton(btnEdit, new Color(70, 130, 180));
@@ -208,7 +195,6 @@ public class AppointmentsView extends JPanel {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
-    // Table management methods
     public void clearTable() {
         tableModel.setRowCount(0);
     }
@@ -231,7 +217,6 @@ public class AppointmentsView extends JPanel {
         return appointmentsTable.getSelectedRow();
     }
 
-    // Getters for filters
     public String getSelectedStatus() {
         return (String) filterStatusCombo.getSelectedItem();
     }
@@ -248,7 +233,6 @@ public class AppointmentsView extends JPanel {
         return (String) viewModeCombo.getSelectedItem();
     }
 
-    // Method to populate doctors combo
     public void loadDoctors(java.util.List<String> doctors) {
         filterDoctorCombo.removeAllItems();
         filterDoctorCombo.addItem("Todos los Médicos");
@@ -257,7 +241,6 @@ public class AppointmentsView extends JPanel {
         }
     }
 
-    // Getters for buttons
     public JButton getBtnCreate() { return btnCreate; }
     public JButton getBtnEdit() { return btnEdit; }
     public JButton getBtnCancel() { return btnCancel; }

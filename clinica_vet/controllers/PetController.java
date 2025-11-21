@@ -1,5 +1,6 @@
 package clinica_vet.controllers;
 
+import clinica_vet.model.entities.Owner;
 import clinica_vet.model.entities.Pet;
 import clinica_vet.model.entities.Sex;
 import clinica_vet.model.repositories.OwnerRepository;
@@ -29,22 +30,22 @@ public class PetController {
         this.ownerRepository = ownerRepository;
         this.mainView = mainView;
 
-        // Configurar los listeners
         petManagementView.getBtnClose().addActionListener(e -> mainView.setContent(mainView.getWelcomeView()));
         petManagementView.getBtnCreate().addActionListener(e -> showCreatePetDialog());
         petManagementView.getBtnDelete().addActionListener(e -> deleteSelectedPet());
         petManagementView.getBtnEdit().addActionListener(e -> showEditPetDialog());
 
-        // Cargar datos iniciales
         loadPetTable();
     }
 
     private void loadPetTable() {
         petManagementView.clearTable();
         for (Pet pet : petRepository.getAllPets()) {
+            String ownerName = pet.getOwner() != null ? pet.getOwner().getName() : "Sin dueño";
             petManagementView.addPetToTable(
                 pet.getId(),
                 pet.getName(),
+                ownerName,          // Dueño en posición correcta
                 pet.getSpecies(),
                 pet.getRace(),
                 pet.getAge(),
@@ -55,7 +56,11 @@ public class PetController {
     }
 
     private void showCreatePetDialog() {
-        CreatePetView createView = new CreatePetView(mainView);
+        // Obtener lista de dueños disponibles
+        List<Owner> availableOwners = ownerRepository.getAllOwners();
+        
+        // Pasar la lista de dueños a la vista
+        CreatePetView createView = new CreatePetView(mainView, availableOwners);
         
         createView.getBtnSave().addActionListener(e -> {
             try {
@@ -68,8 +73,10 @@ public class PetController {
                 String observations = createView.getObservationsTA().getText().trim();
                 List<String> vaccines = createView.getSelectedVaccines();
                 List<String> allergies = createView.getSelectedAllergies();
+                
+                // Obtener el dueño seleccionado
+                Owner selectedOwner = (Owner) createView.getOwnerCB().getSelectedItem();
 
-                // Validar campos obligatorios
                 if (name.isEmpty() || species.isEmpty() || race.isEmpty() || ageText.isEmpty() || weightText.isEmpty()) {
                     JOptionPane.showMessageDialog(createView,
                             "Todos los campos obligatorios deben llenarse.",
@@ -92,8 +99,17 @@ public class PetController {
                     return;
                 }
 
+                // Crear mascota con el dueño asignado
                 Pet newPet = new Pet(name, species, race, age, sex, weight, observations, vaccines, allergies);
+                newPet.setOwner(selectedOwner);
+                
                 petRepository.addPet(newPet);
+
+                // Si hay dueño seleccionado, agregar la mascota a su lista
+                if (selectedOwner != null) {
+                    selectedOwner.addPet(newPet);
+                    ownerRepository.updateOwner(selectedOwner);
+                }
 
                 JOptionPane.showMessageDialog(createView,
                         "Mascota " + name + " creada con éxito.",
@@ -134,7 +150,8 @@ public class PetController {
             return;
         }
 
-        EditPetView editView = new EditPetView(mainView, petToEdit);
+        List<Owner> availableOwners = ownerRepository.getAllOwners();
+        EditPetView editView = new EditPetView(mainView, petToEdit, availableOwners);
 
         editView.getBtnSave().addActionListener(e -> {
             try {
@@ -147,6 +164,10 @@ public class PetController {
                 String observations = editView.getObservationsTA().getText().trim();
                 List<String> vaccines = editView.getSelectedVaccines();
                 List<String> allergies = editView.getSelectedAllergies();
+                
+                // Obtener el nuevo dueño seleccionado
+                Owner newOwner = (Owner) editView.getOwnerCB().getSelectedItem();
+                Owner previousOwner = petToEdit.getOwner();
 
                 if (name.isEmpty() || species.isEmpty() || race.isEmpty() || ageText.isEmpty() || weightText.isEmpty()) {
                     JOptionPane.showMessageDialog(editView,
@@ -170,6 +191,12 @@ public class PetController {
                     return;
                 }
 
+                // Actualizar relación con dueño anterior si cambió
+                if (previousOwner != null && !previousOwner.equals(newOwner)) {
+                    previousOwner.removePet(petToEdit);
+                    ownerRepository.updateOwner(previousOwner);
+                }
+
                 petToEdit.setName(name);
                 petToEdit.setSpecies(species);
                 petToEdit.setRace(race);
@@ -179,8 +206,15 @@ public class PetController {
                 petToEdit.setObservations(observations);
                 petToEdit.setVaccinnes(vaccines);
                 petToEdit.setAllergies(allergies);
+                petToEdit.setOwner(newOwner);
 
                 petRepository.updatePet(petToEdit);
+
+                // Agregar mascota al nuevo dueño
+                if (newOwner != null && !newOwner.equals(previousOwner)) {
+                    newOwner.addPet(petToEdit);
+                    ownerRepository.updateOwner(newOwner);
+                }
 
                 JOptionPane.showMessageDialog(editView,
                         "Mascota modificada con éxito.",
@@ -211,6 +245,7 @@ public class PetController {
         }
 
         UUID petId = (UUID) petManagementView.getTable().getModel().getValueAt(selectedRow, 0);
+        Pet petToDelete = petRepository.getPetById(petId);
         String petName = (String) petManagementView.getTable().getModel().getValueAt(selectedRow, 1);
 
         int confirm = JOptionPane.showConfirmDialog(mainView,
@@ -219,6 +254,13 @@ public class PetController {
                 JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
+            // Remover mascota del dueño si tiene uno
+            if (petToDelete != null && petToDelete.getOwner() != null) {
+                Owner owner = petToDelete.getOwner();
+                owner.removePet(petToDelete);
+                ownerRepository.updateOwner(owner);
+            }
+            
             petRepository.deletePetById(petId);
             JOptionPane.showMessageDialog(mainView,
                     "Mascota eliminada.",

@@ -41,37 +41,20 @@ public class AppointmentsController {
     }
 
     private void initController() {
-        // Create button
         view.getBtnCreate().addActionListener(e -> handleCreate());
-
-        // Edit button
         view.getBtnEdit().addActionListener(e -> handleEdit());
-
-        // Confirm button
         view.getBtnConfirm().addActionListener(e -> handleConfirm());
-
-        // Cancel button
         view.getBtnCancel().addActionListener(e -> handleCancel());
-
-        // Complete button
         view.getBtnComplete().addActionListener(e -> handleComplete());
-
-        // Delete button
         view.getBtnDelete().addActionListener(e -> handleDelete());
-
-        // Refresh button
         view.getBtnRefresh().addActionListener(e -> loadAppointments());
-
-        // Apply filters button
         view.getBtnApplyFilters().addActionListener(e -> applyFilters());
-
-        // Clear filters button
         view.getBtnClearFilters().addActionListener(e -> clearFilters());
     }
 
     private void handleCreate() {
         CreateAppointmentView createView = new CreateAppointmentView(parentFrame);
-        new CreateAppointmentController(createView, appointmentService, petRepository, userRepository, this);
+        CreateAppointmentController createAppointmentController = new CreateAppointmentController(createView, appointmentService, petRepository, userRepository, this);
         createView.setVisible(true);
     }
 
@@ -98,7 +81,7 @@ public class AppointmentsController {
             }
 
             EditAppointmentView editView = new EditAppointmentView(parentFrame);
-            new EditAppointmentController(editView, appointmentService, petRepository, userRepository, appointment, this);
+            EditAppointmentController editAppointmentController = new EditAppointmentController(editView, appointmentService, petRepository, userRepository, appointment, this);
             editView.setVisible(true);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(view, 
@@ -313,25 +296,20 @@ public class AppointmentsController {
         view.clearTable();
         List<Appointment> appointments = appointmentService.getAllAppointments();
         
-        // Get filter values
         String selectedStatus = view.getSelectedStatus();
         String selectedDoctor = view.getSelectedDoctor();
         java.util.Date selectedDate = view.getSelectedDate();
         
-        // Flags to determine which filters to apply
         boolean filterByStatus = !selectedStatus.equals("Todos");
         boolean filterByDoctor = !selectedDoctor.equals("Todos los Médicos");
-        boolean filterByDate = true; // Date filter is always applied
-        
-        // Convert date to LocalDate for comparison
+        boolean filterByDate = true;
+
         LocalDate filterDate = selectedDate.toInstant()
             .atZone(java.time.ZoneId.systemDefault())
             .toLocalDate();
         
-        // Apply filters
-        List<Appointment> filteredAppointments = appointments.stream()
+            List<Appointment> filteredAppointments = appointments.stream()
             .filter(appointment -> {
-                // Filter by status (optional)
                 if (filterByStatus) {
                     String appointmentStatus = appointment.getStatus().getDisplayName();
                     if (!appointmentStatus.equals(selectedStatus)) {
@@ -339,7 +317,6 @@ public class AppointmentsController {
                     }
                 }
                 
-                // Filter by doctor (optional)
                 if (filterByDoctor) {
                     if (appointment.getDoctor() == null || 
                         !appointment.getDoctor().getUsername().equals(selectedDoctor)) {
@@ -347,7 +324,6 @@ public class AppointmentsController {
                     }
                 }
                 
-                // Filter by date (always applied)
                 if (filterByDate) {
                     LocalDate appointmentDate = appointment.getDateTime().toLocalDate();
                     if (!appointmentDate.equals(filterDate)) {
@@ -357,10 +333,9 @@ public class AppointmentsController {
                 
                 return true;
             })
-            .sorted((a1, a2) -> a1.getDateTime().compareTo(a2.getDateTime())) // Sort by time
+            .sorted((a1, a2) -> a1.getDateTime().compareTo(a2.getDateTime()))
             .collect(Collectors.toList());
         
-        // Display filtered results
         if (filteredAppointments.isEmpty()) {
             JOptionPane.showMessageDialog(view, 
                 "No se encontraron citas con los filtros aplicados.\n" +
@@ -371,7 +346,6 @@ public class AppointmentsController {
                 "Sin Resultados", 
                 JOptionPane.INFORMATION_MESSAGE);
         } else {
-            // Show count of filtered results
             String filterInfo = "Mostrando " + filteredAppointments.size() + " cita(s) para " + 
                                filterDate.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             if (filterByStatus) filterInfo += " - Estado: " + selectedStatus;
