@@ -14,8 +14,6 @@ public class MainWindowView extends JFrame {
     private JButton btnAppointment;
     private JButton btnHistory;
     private JButton btnPayments;
-
-    // 🔹 Nuevos botones
     private JButton btnOwners;
     private JButton btnPets;
     private JButton btnAgenda;
@@ -39,7 +37,7 @@ public class MainWindowView extends JFrame {
 
     private void createTopBar() {
         topBar = new JPanel(new BorderLayout());
-        topBar.setBackground(new Color(70, 130, 180)); // Azul elegante
+        topBar.setBackground(new Color(70, 130, 180));
         topBar.setPreferredSize(new Dimension(1000, 50));
 
         JLabel title = new JLabel("Clínica Veterinaria - Sistema de Gestión", SwingConstants.CENTER);
@@ -49,8 +47,8 @@ public class MainWindowView extends JFrame {
         btnPerfil = new JButton("Perfil");
         btnLogout = new JButton("Cerrar Sesión");
 
-        styleTopButton(btnPerfil, new Color(255, 215, 0)); // Amarillo dorado
-        styleTopButton(btnLogout, new Color(220, 20, 60)); // Rojo
+        styleTopButton(btnPerfil, new Color(255, 215, 0));
+        styleTopButton(btnLogout, new Color(220, 20, 60));
 
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 15, 10));
         rightPanel.setBackground(new Color(70, 130, 180));
@@ -63,7 +61,7 @@ public class MainWindowView extends JFrame {
 
     private void createSideMenu() {
         sideMenu = new JPanel();
-        sideMenu.setLayout(new GridLayout(9, 1, 0, 15)); // aumentamos el número de filas
+        sideMenu.setLayout(new GridLayout(9, 1, 0, 15));
         sideMenu.setBackground(new Color(245, 245, 245));
         sideMenu.setPreferredSize(new Dimension(220, 0));
 
@@ -71,8 +69,6 @@ public class MainWindowView extends JFrame {
         btnAppointment = new JButton("Agendar Citas");
         btnHistory = new JButton("Historia Clínica");
         btnPayments = new JButton("Facturación y Pagos");
-
-        // 🔹 Nuevos botones
         btnOwners = new JButton("Gestión de Dueños");
         btnPets = new JButton("Gestión de Mascotas");
         btnAgenda = new JButton("Agenda de Citas");
@@ -85,7 +81,6 @@ public class MainWindowView extends JFrame {
         styleMenuButton(btnPets);
         styleMenuButton(btnAgenda);
 
-        // 🔹 Agregamos los botones al panel lateral
         sideMenu.add(btnUsers);
         sideMenu.add(btnAppointment);
         sideMenu.add(btnHistory);
@@ -123,7 +118,6 @@ public class MainWindowView extends JFrame {
         button.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
     }
 
-    // ⭐ MÉTODO CLAVE PARA CAMBIAR EL CONTENIDO CENTRAL
     public void setContent(JPanel newContent) {
         contentView.removeAll();
         contentView.add(newContent, BorderLayout.CENTER);
@@ -131,7 +125,6 @@ public class MainWindowView extends JFrame {
         contentView.repaint();
     }
     
-    // ⭐ Método para restablecer la vista de bienvenida
     public JPanel getWelcomeView() {
         JPanel welcomePanel = new JPanel(new BorderLayout());
         JLabel lblBienvenida = new JLabel("Bienvenido al Sistema de Clínica Vet", SwingConstants.CENTER);
@@ -141,8 +134,6 @@ public class MainWindowView extends JFrame {
         return welcomePanel;
     }
 
-
-    // 🔹 Getters
     public JButton getBtnProfile() { return btnPerfil; }
     public JButton getBtnLogout() { return btnLogout; }
     public JButton getBtnUsers() { return btnUsers; }

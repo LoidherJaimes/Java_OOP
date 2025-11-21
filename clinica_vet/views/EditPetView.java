@@ -165,10 +165,8 @@ public class EditPetView extends JDialog {
 
         observationsTA.setText(petToEdit.getObservations());
         
-        // Preseleccionar el dueño actual
         ownerCB.setSelectedItem(petToEdit.getOwner());
         
-        // Cargar selecciones de listas
         setSelectedValues(vaccinesList, petToEdit.getVaccinnes());
         setSelectedValues(allergiesList, petToEdit.getAllergies());
     }

@@ -72,7 +72,5 @@ public class ProfileView extends JPanel {
         infoPanel.add(lblRoleValue, gbc);
         
         add(infoPanel, BorderLayout.CENTER);
-        
-        // Nota: Si quieres un botón "Volver", debes agregarlo y darle un getter.
     }
 }
