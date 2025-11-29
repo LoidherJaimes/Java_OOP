@@ -116,7 +116,6 @@ public class MainWindowController {
         mainWindowView.setContent(appointmentsView);
     }
     
-    // ⭐ NUEVO: Cargar vista de historia clínica
     private void loadMedicalHistoryView() {
         MedicalHistoryView historyView = new MedicalHistoryView();
         MedicalHistoryController historyController = new MedicalHistoryController(
