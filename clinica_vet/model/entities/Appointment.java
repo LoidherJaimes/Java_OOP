@@ -8,16 +8,18 @@ public class Appointment {
     private UUID id;
     private LocalDateTime dateTime;
     private Pet pet;
-    private User doctor; // User with "Medico" role
+    private User doctor;
     private String reason;
     private AppointmentStatus status;
-    private int durationMinutes; // Estimated appointment duration
+    private int durationMinutes;
+    private UUID medicalAttentionId;
 
     // Empty constructor
     public Appointment() {
         this.id = UUID.randomUUID();
         this.status = AppointmentStatus.PENDING;
-        this.durationMinutes = 30; // Default duration: 30 minutes
+        this.durationMinutes = 30;
+        this.medicalAttentionId = null;
     }
 
     // Full constructor
@@ -30,9 +32,9 @@ public class Appointment {
         this.reason = reason;
         this.status = status;
         this.durationMinutes = durationMinutes;
+        this.medicalAttentionId = null;
     }
 
-    // Constructor without ID (will be generated)
     public Appointment(LocalDateTime dateTime, Pet pet, User doctor, 
                       String reason, AppointmentStatus status, int durationMinutes) {
         this.id = UUID.randomUUID();
@@ -42,6 +44,20 @@ public class Appointment {
         this.reason = reason;
         this.status = status;
         this.durationMinutes = durationMinutes;
+        this.medicalAttentionId = null;
+    }
+
+    public Appointment(UUID id, LocalDateTime dateTime, Pet pet, User doctor, 
+                      String reason, AppointmentStatus status, int durationMinutes,
+                      UUID medicalAttentionId) {
+        this.id = id;
+        this.dateTime = dateTime;
+        this.pet = pet;
+        this.doctor = doctor;
+        this.reason = reason;
+        this.status = status;
+        this.durationMinutes = durationMinutes;
+        this.medicalAttentionId = medicalAttentionId;
     }
 
     // Getters and Setters
@@ -101,7 +117,14 @@ public class Appointment {
         this.durationMinutes = durationMinutes; 
     }
 
-    // Utility methods
+    public UUID getMedicalAttentionId() {
+        return medicalAttentionId;
+    }
+
+    public void setMedicalAttentionId(UUID medicalAttentionId) {
+        this.medicalAttentionId = medicalAttentionId;
+    }
+
     public LocalDateTime getEndDateTime() {
         return dateTime.plusMinutes(durationMinutes);
     }
@@ -137,10 +160,26 @@ public class Appointment {
         return status == AppointmentStatus.CONFIRMED;
     }
 
+    public boolean hasBeenAttended() {
+        return medicalAttentionId != null;
+    }
+
+    public boolean canBeAttended() {
+        return status == AppointmentStatus.CONFIRMED && medicalAttentionId == null;
+    }
+
+    public void linkMedicalAttention(UUID attentionId) {
+        if (attentionId == null) {
+            throw new IllegalArgumentException("Medical attention ID cannot be null");
+        }
+        this.medicalAttentionId = attentionId;
+    }
+
     @Override
     public String toString() {
         return "Appointment #" + id.toString().substring(0, 8) + " - " + getFormattedDateTime() + 
                " - " + (pet != null ? pet.getName() : "No pet") + 
-               " - " + status.getDisplayName();
+               " - " + status.getDisplayName() +
+               (hasBeenAttended() ? " [Atendida]" : "");
     }
 }
