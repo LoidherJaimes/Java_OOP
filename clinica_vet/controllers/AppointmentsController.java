@@ -3,12 +3,12 @@ package clinica_vet.controllers;
 import clinica_vet.model.entities.Appointment;
 import clinica_vet.model.entities.AppointmentStatus;
 import clinica_vet.model.entities.User;
-import clinica_vet.model.repositories.AppointmentService;
-import clinica_vet.model.repositories.PetRepository;
-import clinica_vet.model.repositories.UserRepository;
+import clinica_vet.model.repositories.*;
 import clinica_vet.views.AppointmentsView;
 import clinica_vet.views.CreateAppointmentView;
 import clinica_vet.views.EditAppointmentView;
+import clinica_vet.views.MainWindowView;
+import clinica_vet.views.MedicalAttentionView;
 
 import javax.swing.*;
 import java.time.LocalDate;
@@ -23,21 +23,39 @@ public class AppointmentsController {
     private PetRepository petRepository;
     private UserRepository userRepository;
     private JFrame parentFrame;
+    
+    private MedicalAttentionRepository medicalAttentionRepository;
+    private TreatmentRepository treatmentRepository;
+    private MedicalOrderRepository medicalOrderRepository;
+    
+    private MainWindowView mainWindowView;
+    private User currentUser;
 
     public AppointmentsController(AppointmentsView view, 
                                  AppointmentService appointmentService,
                                  PetRepository petRepository,
                                  UserRepository userRepository, 
-                                 JFrame parentFrame) {
+                                 JFrame parentFrame,
+                                 MedicalAttentionRepository medicalAttentionRepository, 
+                                 TreatmentRepository treatmentRepository,               
+                                 MedicalOrderRepository medicalOrderRepository,         
+                                 MainWindowView mainWindowView,                         
+                                 User currentUser) {                                    
         this.view = view;
         this.appointmentService = appointmentService;
         this.petRepository = petRepository;
         this.userRepository = userRepository;
         this.parentFrame = parentFrame;
+        this.medicalAttentionRepository = medicalAttentionRepository;
+        this.treatmentRepository = treatmentRepository;
+        this.medicalOrderRepository = medicalOrderRepository;
+        this.mainWindowView = mainWindowView;
+        this.currentUser = currentUser;
 
         initController();
         loadDoctorsFilter();
         loadAppointments();
+        configureStartAttentionButton(); // ⭐ NUEVO
     }
 
     private void initController() {
@@ -50,6 +68,86 @@ public class AppointmentsController {
         view.getBtnRefresh().addActionListener(e -> loadAppointments());
         view.getBtnApplyFilters().addActionListener(e -> applyFilters());
         view.getBtnClearFilters().addActionListener(e -> clearFilters());
+        view.getBtnStartAttention().addActionListener(e -> handleStartAttention()); // ⭐ NUEVO
+    }
+    
+    private void configureStartAttentionButton() {
+        boolean isVeterinarian = currentUser.getRol() != null && 
+                                currentUser.getRol().getName().equalsIgnoreCase("Veterinario");
+        view.getBtnStartAttention().setVisible(isVeterinarian);
+    }
+    
+    private void handleStartAttention() {
+        String selectedId = view.getSelectedAppointmentId();
+        if (selectedId == null) {
+            JOptionPane.showMessageDialog(view,
+                "Por favor, seleccione una cita para atender.",
+                "Advertencia",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            UUID appointmentId = UUID.fromString(selectedId);
+            Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+
+            if (appointment == null) {
+                JOptionPane.showMessageDialog(view,
+                    "No se encontró la cita seleccionada.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (appointment.getStatus() != AppointmentStatus.CONFIRMED) {
+                JOptionPane.showMessageDialog(view,
+                    "Solo se pueden atender citas confirmadas.\nEstado actual: " + 
+                    appointment.getStatus().getDisplayName(),
+                    "Estado Inválido",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // Verificar si ya fue atendida (opcional: permitir ver/editar)
+            if (appointment.hasBeenAttended()) {
+                int option = JOptionPane.showConfirmDialog(view,
+                    "Esta cita ya tiene una atención registrada.\n¿Desea ver/editar la atención?",
+                    "Atención Existente",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+
+                if (option != JOptionPane.YES_OPTION) {
+                    return;
+                }
+            }
+
+            MedicalAttentionView attentionView = new MedicalAttentionView();
+            
+            MedicalAttentionController attentionController = new MedicalAttentionController(
+                attentionView,
+                mainWindowView,
+                appointment,
+                currentUser,
+                medicalAttentionRepository,
+                treatmentRepository,
+                medicalOrderRepository,
+                appointmentService
+            );
+            
+            attentionController.setOnReturnCallback(() -> {
+                loadAppointments(); // Recargar citas al volver
+                mainWindowView.setContent(view);
+            });
+            
+            mainWindowView.setContent(attentionView);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(view,
+                "Error al iniciar atención: " + ex.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();
+        }
     }
 
     private void handleCreate() {
@@ -259,7 +357,7 @@ public class AppointmentsController {
     private void loadDoctorsFilter() {
         List<User> allUsers = userRepository.getAllUsers();
         List<String> doctorNames = allUsers.stream()
-            .filter(u -> u.getRol() != null && u.getRol().getName().equalsIgnoreCase("Medico"))
+            .filter(u -> u.getRol() != null && u.getRol().getName().equalsIgnoreCase("Veterinario")) // ⭐ CORREGIDO
             .map(User::getUsername)
             .collect(Collectors.toList());
         
@@ -377,7 +475,6 @@ public class AppointmentsController {
     }
 
     private void clearFilters() {
-        // Reset date to today
         view.getFilterDateSpinner().setValue(new java.util.Date());
         view.clearFilterInfo();
         loadAppointments();

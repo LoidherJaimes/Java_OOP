@@ -25,6 +25,11 @@ public class App {
     private PetRepository petRepository;
     private IAppointmentRepository appointmentRepository;
     private AppointmentService appointmentService;
+    
+    private MedicalAttentionRepository medicalAttentionRepository;
+    private TreatmentRepository treatmentRepository;
+    private MedicalOrderRepository medicalOrderRepository;
+    
     private LoginView loginView;
 
     public App() {
@@ -36,18 +41,20 @@ public class App {
         this.appointmentRepository = new AppointmentRepository();
         this.appointmentService = new AppointmentService(appointmentRepository);
         
+        this.medicalAttentionRepository = new MedicalAttentionRepository();
+        this.treatmentRepository = new TreatmentRepository();
+        this.medicalOrderRepository = new MedicalOrderRepository();
+        
         initializeData();
     }
     
     private void initializeData() {
-        // --- Roles por defecto ---
         if (rolService.getAllRoles().isEmpty()) {
             rolService.addRol("Administrador");
             rolService.addRol("Auxiliar");
-            rolService.addRol("Veterinario");
+            rolService.addRol("Veterinario"); 
         }
 
-        // --- Usuarios por defecto ---
         if (userRepository.getAllUsers().isEmpty()) {
             Rol rolAdmin = rolService.getRolByName("Administrador");
             Rol rolAux = rolService.getRolByName("Auxiliar");
@@ -64,7 +71,6 @@ public class App {
             userRepository.addUser(vet2);
         }
 
-        // --- Mascotas por defecto ---
         if (petRepository.getAllPets().isEmpty()) {
             Pet pet1 = new Pet(
                 "Firulais",
@@ -90,7 +96,6 @@ public class App {
                 Arrays.asList("Polvo")
             );
 
-            // --- Dueños por defecto ---
             if (ownerRepository.getAllOwners().isEmpty()) {
                 Owner owner1 = new Owner("Juan Pérez", "555-1234", "Calle 10 #5-20");
                 Owner owner2 = new Owner("Ana Gómez", "555-5678", "Av. Principal 45");
@@ -108,8 +113,6 @@ public class App {
             petRepository.addPet(pet1);
             petRepository.addPet(pet2);
             
-            // --- Citas de prueba ---
-            // Obtener veterinarios
             User vet1 = userRepository.getAllUsers().stream()
                 .filter(u -> u.getUsername().equals("Dr. García"))
                 .findFirst()
@@ -121,7 +124,6 @@ public class App {
                 .orElse(null);
             
             if (vet1 != null && vet2 != null) {
-                // Cita 1: Mañana a las 10:00 con Dr. García
                 Appointment appointment1 = new Appointment();
                 appointment1.setDateTime(LocalDateTime.now().plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0));
                 appointment1.setPet(pet1);
@@ -131,7 +133,6 @@ public class App {
                 appointment1.setDurationMinutes(30);
                 appointmentService.createAppointment(appointment1);
                 
-                // Cita 2: Mañana a las 11:00 con Dra. Martínez
                 Appointment appointment2 = new Appointment();
                 appointment2.setDateTime(LocalDateTime.now().plusDays(1).withHour(11).withMinute(0).withSecond(0).withNano(0));
                 appointment2.setPet(pet2);
@@ -141,7 +142,6 @@ public class App {
                 appointment2.setDurationMinutes(45);
                 appointmentService.createAppointment(appointment2);
                 
-                // Cita 3: En 3 días a las 15:00 con Dr. García
                 Appointment appointment3 = new Appointment();
                 appointment3.setDateTime(LocalDateTime.now().plusDays(3).withHour(15).withMinute(0).withSecond(0).withNano(0));
                 appointment3.setPet(pet1);
@@ -160,7 +160,7 @@ public class App {
         }
         loginView = new LoginView();
         
-        new LoginController(loginView, userRepository, this::onLoginSuccess); 
+        LoginController loginController = new LoginController(loginView, userRepository, this::onLoginSuccess); 
         loginView.setVisible(true);
     }
     
@@ -170,7 +170,7 @@ public class App {
         
         Runnable onLogoutAction = this::startApplication;
         
-        new MainWindowController(
+        MainWindowController mainWindowController = new MainWindowController(
             mainWindowView, 
             user, 
             userRepository, 
@@ -178,6 +178,9 @@ public class App {
             ownerRepository, 
             petRepository,
             appointmentService,
+            medicalAttentionRepository,  
+            treatmentRepository,         
+            medicalOrderRepository,      
             onLogoutAction
         ); 
         

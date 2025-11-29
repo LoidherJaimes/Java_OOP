@@ -1,11 +1,7 @@
 package clinica_vet.controllers;
 
 import clinica_vet.model.entities.User;
-import clinica_vet.model.repositories.AppointmentService;
-import clinica_vet.model.repositories.IRolService;
-import clinica_vet.model.repositories.OwnerRepository;
-import clinica_vet.model.repositories.PetRepository;
-import clinica_vet.model.repositories.UserRepository;
+import clinica_vet.model.repositories.*;
 import clinica_vet.views.AppointmentsView;
 import clinica_vet.views.MainWindowView;
 import clinica_vet.views.ManageUsersView;
@@ -22,6 +18,10 @@ public class MainWindowController {
     private final PetRepository petRepository;
     private final AppointmentService appointmentService;
     private final Runnable onLogoutAction;
+    
+    private final MedicalAttentionRepository medicalAttentionRepository;
+    private final TreatmentRepository treatmentRepository;
+    private final MedicalOrderRepository medicalOrderRepository;
 
     public MainWindowController(MainWindowView mainWindowView, 
                                User currentUser, 
@@ -30,6 +30,9 @@ public class MainWindowController {
                                OwnerRepository ownerRepository, 
                                PetRepository petRepository,
                                AppointmentService appointmentService,
+                               MedicalAttentionRepository medicalAttentionRepository, // ⭐ NUEVO
+                               TreatmentRepository treatmentRepository,               // ⭐ NUEVO
+                               MedicalOrderRepository medicalOrderRepository,         // ⭐ NUEVO
                                Runnable onLogoutAction) {
         this.mainWindowView = mainWindowView;
         this.currentUser = currentUser;
@@ -38,10 +41,27 @@ public class MainWindowController {
         this.ownerRepository = ownerRepository;
         this.petRepository = petRepository;
         this.appointmentService = appointmentService;
+        this.medicalAttentionRepository = medicalAttentionRepository;
+        this.treatmentRepository = treatmentRepository;
+        this.medicalOrderRepository = medicalOrderRepository;
         this.onLogoutAction = onLogoutAction;
         
         setupListeners();
+        configureMenuByRole(); // ⭐ NUEVO: Configurar menú según rol
         mainWindowView.setContent(mainWindowView.getWelcomeView());
+    }
+    
+    private void configureMenuByRole() {
+        boolean isAdmin = currentUser.getRol() != null && 
+                         currentUser.getRol().getName().equalsIgnoreCase("Administrador");
+        boolean isVeterinarian = currentUser.getRol() != null && 
+                                currentUser.getRol().getName().equalsIgnoreCase("Veterinario");
+        
+        mainWindowView.getBtnUsers().setVisible(isAdmin);
+        
+        if (mainWindowView.getBtnHistory() != null) {
+            mainWindowView.getBtnHistory().setVisible(isVeterinarian);
+        }
     }
 
     private void setupListeners() {
@@ -54,6 +74,10 @@ public class MainWindowController {
         this.mainWindowView.getBtnPets().addActionListener(e -> loadPetManagementView());
         
         this.mainWindowView.getBtnAppointment().addActionListener(e -> loadAppointmentsView());
+        
+        if (this.mainWindowView.getBtnHistory() != null) {
+            this.mainWindowView.getBtnHistory().addActionListener(e -> loadMedicalHistoryView());
+        }
     }
     
     private void loadUserManagementView() {
@@ -81,8 +105,21 @@ public class MainWindowController {
             appointmentService,
             petRepository,
             userRepository,
-            (JFrame) SwingUtilities.getWindowAncestor(mainWindowView)
+            (JFrame) SwingUtilities.getWindowAncestor(mainWindowView),
+            medicalAttentionRepository,  // ⭐ NUEVO
+            treatmentRepository,         // ⭐ NUEVO
+            medicalOrderRepository,      // ⭐ NUEVO
+            mainWindowView,              // ⭐ NUEVO
+            currentUser                  // ⭐ NUEVO
         );
         mainWindowView.setContent(appointmentsView);
+    }
+    
+    private void loadMedicalHistoryView() {
+        // TODO: Implementar en FASE 6
+        JOptionPane.showMessageDialog(mainWindowView,
+            "Vista de Historia Clínica en desarrollo.\nSe implementará en la siguiente fase.",
+            "Próximamente",
+            JOptionPane.INFORMATION_MESSAGE);
     }
 }

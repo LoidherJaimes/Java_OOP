@@ -5,7 +5,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.UUID;
 
-// ⭐ Ahora extiende JPanel
 public class ManageUsersView extends JPanel {
 
     private JTable table;

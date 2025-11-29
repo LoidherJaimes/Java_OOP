@@ -24,11 +24,9 @@ public class AppointmentsView extends JPanel {
     private JButton btnComplete;
     private JButton btnDelete;
     private JButton btnRefresh;
-
-    // View mode
+    private JButton btnStartAttention;
     private JComboBox<String> viewModeCombo;
     
-    // Filter info label
     private JLabel filterInfoLabel;
 
     public AppointmentsView() {
@@ -156,6 +154,7 @@ public class AppointmentsView extends JPanel {
         btnComplete = new JButton("Completar");
         btnDelete = new JButton("Eliminar");
         btnRefresh = new JButton("Actualizar");
+        btnStartAttention = new JButton("Iniciar Atencion"); // ⭐ NUEVO
 
         styleActionButton(btnCreate, new Color(60, 179, 113));
         styleActionButton(btnEdit, new Color(70, 130, 180));
@@ -164,10 +163,12 @@ public class AppointmentsView extends JPanel {
         styleActionButton(btnComplete, new Color(138, 43, 226));
         styleActionButton(btnDelete, new Color(178, 34, 34));
         styleActionButton(btnRefresh, new Color(100, 149, 237));
+        styleActionButton(btnStartAttention, new Color(255, 140, 0)); // ⭐ NUEVO: Color naranja
 
         panel.add(btnCreate);
         panel.add(btnEdit);
         panel.add(btnConfirm);
+        panel.add(btnStartAttention); // ⭐ NUEVO: Agregado después de Confirmar
         panel.add(btnCancel);
         panel.add(btnComplete);
         panel.add(btnDelete);
@@ -240,6 +241,18 @@ public class AppointmentsView extends JPanel {
             filterDoctorCombo.addItem(doctor);
         }
     }
+    
+    public void setFilterInfo(String info) {
+        if (filterInfoLabel != null) {
+            filterInfoLabel.setText(info);
+        }
+    }
+    
+    public void clearFilterInfo() {
+        if (filterInfoLabel != null) {
+            filterInfoLabel.setText("");
+        }
+    }
 
     public JButton getBtnCreate() { return btnCreate; }
     public JButton getBtnEdit() { return btnEdit; }
@@ -250,6 +263,7 @@ public class AppointmentsView extends JPanel {
     public JButton getBtnRefresh() { return btnRefresh; }
     public JButton getBtnApplyFilters() { return btnApplyFilters; }
     public JButton getBtnClearFilters() { return btnClearFilters; }
+    public JButton getBtnStartAttention() { return btnStartAttention; }
     public JComboBox<String> getViewModeCombo() { return viewModeCombo; }
     public JTable getAppointmentsTable() { return appointmentsTable; }
     public JSpinner getFilterDateSpinner() { return filterDateSpinner; }
