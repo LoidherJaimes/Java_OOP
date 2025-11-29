@@ -1,8 +1,12 @@
 package clinica_vet.views;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
+/**
+ * Vista modal para agregar o editar un tratamiento médico.
+ * Permite ingresar medicamento, dosis, frecuencia, duración e instrucciones.
+ */
 public class AddTreatmentView extends JDialog {
     
     private JTextField txtMedication;
@@ -27,6 +31,27 @@ public class AddTreatmentView extends JDialog {
     }
     
     public AddTreatmentView(JDialog parent, String title) {
+        super(parent, title, true);
+        setSize(500, 450);
+        setLocationRelativeTo(parent);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setResizable(false);
+        
+        initComponents();
+    }
+    
+    // ⭐ NUEVOS: Constructores que aceptan JFrame
+    public AddTreatmentView(JFrame parent) {
+        super(parent, "Agregar Tratamiento", true);
+        setSize(500, 450);
+        setLocationRelativeTo(parent);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setResizable(false);
+        
+        initComponents();
+    }
+    
+    public AddTreatmentView(JFrame parent, String title) {
         super(parent, title, true);
         setSize(500, 450);
         setLocationRelativeTo(parent);

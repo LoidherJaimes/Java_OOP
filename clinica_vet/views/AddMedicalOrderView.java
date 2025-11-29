@@ -4,6 +4,10 @@ import clinica_vet.model.entities.OrderType;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Vista modal para agregar o editar una orden médica.
+ * Permite seleccionar el tipo de orden e ingresar descripción y notas.
+ */
 public class AddMedicalOrderView extends JDialog {
     
     private JComboBox<OrderType> cmbOrderType;
@@ -26,6 +30,27 @@ public class AddMedicalOrderView extends JDialog {
     }
     
     public AddMedicalOrderView(JDialog parent, String title) {
+        super(parent, title, true);
+        setSize(500, 450);
+        setLocationRelativeTo(parent);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setResizable(false);
+        
+        initComponents();
+    }
+    
+    // ⭐ NUEVOS: Constructores que aceptan JFrame
+    public AddMedicalOrderView(JFrame parent) {
+        super(parent, "Agregar Orden Médica", true);
+        setSize(500, 450);
+        setLocationRelativeTo(parent);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        setResizable(false);
+        
+        initComponents();
+    }
+    
+    public AddMedicalOrderView(JFrame parent, String title) {
         super(parent, title, true);
         setSize(500, 450);
         setLocationRelativeTo(parent);

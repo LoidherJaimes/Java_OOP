@@ -16,7 +16,7 @@ public interface IMedicalAttentionRepository {
     
     List<MedicalAttention> getAttentionsByPetId(UUID petId);
     
-    List<MedicalAttention> getAttentionsByVeterinarianId(int veterinarianId);
+    List<MedicalAttention> getAttentionsByVeterinarianId(UUID veterinarianId);
     
     List<MedicalAttention> getAllAttentions();
     

@@ -80,7 +80,7 @@ public class MedicalAttentionRepository implements IMedicalAttentionRepository {
     }
     
     @Override
-    public List<MedicalAttention> getAttentionsByVeterinarianId(int veterinarianId) {
+    public List<MedicalAttention> getAttentionsByVeterinarianId(UUID veterinarianId) {
         return attentions.stream()
             .filter(attention -> attention.getVeterinarianId() == veterinarianId)
             .sorted(Comparator.comparing(MedicalAttention::getDateTime).reversed())

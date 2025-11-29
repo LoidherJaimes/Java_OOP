@@ -8,7 +8,7 @@ public class MedicalAttention {
     private UUID id;
     private UUID appointmentId;
     private UUID petId;
-    private int veterinarianId;
+    private UUID veterinarianId;
     private LocalDateTime dateTime;
     private String symptoms;
     private String diagnosis;
@@ -23,7 +23,7 @@ public class MedicalAttention {
         this.dateTime = LocalDateTime.now();
     }
 
-    public MedicalAttention(UUID appointmentId, UUID petId, int veterinarianId) {
+    public MedicalAttention(UUID appointmentId, UUID petId, UUID veterinarianId) {
         this.id = UUID.randomUUID();
         this.appointmentId = appointmentId;
         this.petId = petId;
@@ -36,7 +36,7 @@ public class MedicalAttention {
         this.closureNotes = "";
     }
 
-    public MedicalAttention(UUID id, UUID appointmentId, UUID petId, int veterinarianId,
+    public MedicalAttention(UUID id, UUID appointmentId, UUID petId, UUID veterinarianId,
                            LocalDateTime dateTime, String symptoms, String diagnosis,
                            String procedures, AttentionStatus status,
                            LocalDateTime closureDate, String closureNotes) {
@@ -77,11 +77,11 @@ public class MedicalAttention {
         this.petId = petId;
     }
 
-    public int getVeterinarianId() {
+    public UUID getVeterinarianId() {
         return veterinarianId;
     }
 
-    public void setVeterinarianId(int veterinarianId) {
+    public void setVeterinarianId(UUID veterinarianId) {
         this.veterinarianId = veterinarianId;
     }
 

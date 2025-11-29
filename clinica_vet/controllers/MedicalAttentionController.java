@@ -6,12 +6,14 @@ import clinica_vet.views.AddMedicalOrderView;
 import clinica_vet.views.AddTreatmentView;
 import clinica_vet.views.MainWindowView;
 import clinica_vet.views.MedicalAttentionView;
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import javax.swing.*;
 
+/**
+ * Controlador para la vista de atención médica.
+ * Maneja el registro de síntomas, diagnóstico, tratamientos y órdenes médicas.
+ */
 public class MedicalAttentionController {
     
     private MedicalAttentionView view;
@@ -19,17 +21,31 @@ public class MedicalAttentionController {
     private Appointment appointment;
     private User currentVeterinarian;
     
+    // Repositorios
     private MedicalAttentionRepository attentionRepository;
     private TreatmentRepository treatmentRepository;
     private MedicalOrderRepository orderRepository;
     private AppointmentService appointmentService;
     
+    // Atención actual
     private MedicalAttention currentAttention;
     private List<Treatment> currentTreatments;
     private List<MedicalOrder> currentOrders;
     
+    // Referencias para navegación
     private Runnable onReturnCallback;
     
+    /**
+     * Constructor del controlador.
+     * @param view Vista de atención médica
+     * @param mainWindow Ventana principal para navegación
+     * @param appointment Cita a atender
+     * @param currentVeterinarian Usuario veterinario que atiende
+     * @param attentionRepository Repositorio de atenciones
+     * @param treatmentRepository Repositorio de tratamientos
+     * @param orderRepository Repositorio de órdenes
+     * @param appointmentService Servicio de citas
+     */
     public MedicalAttentionController(
             MedicalAttentionView view,
             MainWindowView mainWindow,
@@ -158,9 +174,10 @@ public class MedicalAttentionController {
             "Atención Cerrada",
             JOptionPane.INFORMATION_MESSAGE);
     }
-    
+
     private void handleAddTreatment() {
-        AddTreatmentView treatmentView = new AddTreatmentView((JDialog) SwingUtilities.getWindowAncestor(view));
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(view);
+        AddTreatmentView treatmentView = new AddTreatmentView(parentFrame);
         
         treatmentView.getBtnSave().addActionListener(e -> {
             if (treatmentView.validateFields()) {
@@ -201,11 +218,10 @@ public class MedicalAttentionController {
         
         Treatment treatment = currentTreatments.get(selectedRow);
         
-        AddTreatmentView treatmentView = new AddTreatmentView(
-            (JDialog) SwingUtilities.getWindowAncestor(view),
-            "Editar Tratamiento"
-        );
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(view);
+        AddTreatmentView treatmentView = new AddTreatmentView(parentFrame, "Editar Tratamiento");
         
+        // Pre-cargar datos
         treatmentView.setMedication(treatment.getMedication());
         treatmentView.setDosage(treatment.getDosage());
         treatmentView.setFrequency(treatment.getFrequency());
@@ -253,6 +269,7 @@ public class MedicalAttentionController {
         if (confirm == JOptionPane.YES_OPTION) {
             Treatment treatment = currentTreatments.get(selectedRow);
             
+            // Si tiene ID, eliminarlo del repositorio
             if (treatment.getId() != null) {
                 treatmentRepository.deleteTreatment(treatment.getId());
             }
@@ -280,13 +297,16 @@ public class MedicalAttentionController {
         }
     }
     
+    // ========== GESTIÓN DE ÓRDENES MÉDICAS ==========
+    
     private void handleAddOrder() {
-        AddMedicalOrderView orderView = new AddMedicalOrderView((JDialog) SwingUtilities.getWindowAncestor(view));
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(view);
+        AddMedicalOrderView orderView = new AddMedicalOrderView(parentFrame);
         
         orderView.getBtnSave().addActionListener(e -> {
             if (orderView.validateFields()) {
                 MedicalOrder order = new MedicalOrder(
-                    null,
+                    null, // Se asignará cuando se guarde la atención
                     orderView.getSelectedOrderType(),
                     orderView.getDescription(),
                     orderView.getNotes()
@@ -320,11 +340,10 @@ public class MedicalAttentionController {
         
         MedicalOrder order = currentOrders.get(selectedRow);
         
-        AddMedicalOrderView orderView = new AddMedicalOrderView(
-            (JDialog) SwingUtilities.getWindowAncestor(view),
-            "Editar Orden Médica"
-        );
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(view);
+        AddMedicalOrderView orderView = new AddMedicalOrderView(parentFrame, "Editar Orden Médica");
         
+        // Pre-cargar datos
         orderView.setSelectedOrderType(order.getOrderType());
         orderView.setDescription(order.getDescription());
         orderView.setNotes(order.getNotes());
@@ -368,6 +387,7 @@ public class MedicalAttentionController {
         if (confirm == JOptionPane.YES_OPTION) {
             MedicalOrder order = currentOrders.get(selectedRow);
             
+            // Si tiene ID, eliminarlo del repositorio
             if (order.getId() != null) {
                 orderRepository.deleteOrder(order.getId());
             }
@@ -394,26 +414,33 @@ public class MedicalAttentionController {
         }
     }
     
+    // ========== GUARDAR Y CERRAR ==========
+    
     private void handleSaveEvolution() {
         if (!validateFields()) {
             return;
         }
         
+        // Actualizar datos de la atención
         currentAttention.setSymptoms(view.getSymptoms());
         currentAttention.setDiagnosis(view.getDiagnosis());
         currentAttention.setProcedures(view.getProcedures());
         
+        // Guardar o actualizar atención
         if (attentionRepository.getAttentionById(currentAttention.getId()) == null) {
             attentionRepository.addAttention(currentAttention);
             
+            // Vincular con la cita
             appointment.setMedicalAttentionId(currentAttention.getId());
             appointmentService.updateAppointment(appointment);
         } else {
             attentionRepository.updateAttention(currentAttention);
         }
         
+        // Guardar tratamientos
         saveTreatments();
         
+        // Guardar órdenes
         saveOrders();
         
         JOptionPane.showMessageDialog(view,
@@ -451,6 +478,7 @@ public class MedicalAttentionController {
             return;
         }
         
+        // Mostrar diálogo para seleccionar estado de cierre
         String[] options = {"Atendida", "No Asistió", "Reprogramar"};
         int choice = JOptionPane.showOptionDialog(view,
             "Seleccione el estado de cierre de la cita:",
@@ -462,22 +490,23 @@ public class MedicalAttentionController {
             options[0]);
         
         if (choice < 0) {
-            return;
+            return; // Usuario canceló
         }
         
+        // Mapear selección a AttentionStatus
         AttentionStatus status;
         AppointmentStatus appointmentStatus;
         
         switch (choice) {
-            case 0
+            case 0: // Atendida
                 status = AttentionStatus.COMPLETED;
                 appointmentStatus = AppointmentStatus.COMPLETED;
                 break;
-            case 1:
+            case 1: // No Asistió
                 status = AttentionStatus.NO_SHOW;
                 appointmentStatus = AppointmentStatus.CANCELLED;
                 break;
-            case 2:
+            case 2: // Reprogramar
                 status = AttentionStatus.RESCHEDULED;
                 appointmentStatus = AppointmentStatus.PENDING;
                 break;
@@ -485,16 +514,19 @@ public class MedicalAttentionController {
                 return;
         }
         
+        // Solicitar notas de cierre
         String notes = JOptionPane.showInputDialog(view,
             "Notas de cierre (opcional):",
             "Notas de Cierre",
             JOptionPane.PLAIN_MESSAGE);
         
+        // Actualizar atención
         currentAttention.setSymptoms(view.getSymptoms());
         currentAttention.setDiagnosis(view.getDiagnosis());
         currentAttention.setProcedures(view.getProcedures());
         currentAttention.close(status, notes != null ? notes : "");
         
+        // Guardar todo
         if (attentionRepository.getAttentionById(currentAttention.getId()) == null) {
             attentionRepository.addAttention(currentAttention);
             appointment.setMedicalAttentionId(currentAttention.getId());
@@ -505,6 +537,7 @@ public class MedicalAttentionController {
         saveTreatments();
         saveOrders();
         
+        // Actualizar estado de la cita
         appointment.setStatus(appointmentStatus);
         appointmentService.updateAppointment(appointment);
         
@@ -513,6 +546,7 @@ public class MedicalAttentionController {
             "Cita Cerrada",
             JOptionPane.INFORMATION_MESSAGE);
         
+        // Volver a la vista anterior
         handleCancel();
     }
     
