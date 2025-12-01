@@ -298,7 +298,6 @@ public class MedicalHistoryController {
                 
                 JTextArea textArea = new JTextArea();
                 textArea.setEditable(false);
-                textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
                 textArea.setLineWrap(true);
                 textArea.setWrapStyleWord(true);
                 

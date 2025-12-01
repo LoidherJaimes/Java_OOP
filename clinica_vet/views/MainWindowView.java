@@ -17,6 +17,8 @@ public class MainWindowView extends JFrame {
     private JButton btnOwners;
     private JButton btnPets;
     private JButton btnAgenda;
+    private JButton btnReports; 
+    private JButton btnBillingAndPayments;
 
     public MainWindowView() {
         setTitle("Clínica Vet - Panel Principal");
@@ -59,36 +61,51 @@ public class MainWindowView extends JFrame {
         topBar.add(rightPanel, BorderLayout.EAST);
     }
 
-    private void createSideMenu() {
-        sideMenu = new JPanel();
-        sideMenu.setLayout(new GridLayout(9, 1, 0, 15));
-        sideMenu.setBackground(new Color(245, 245, 245));
-        sideMenu.setPreferredSize(new Dimension(220, 0));
+private void createSideMenu() {
+    sideMenu = new JPanel();
+    // Ajusta el número de filas del GridLayout. Contemos:
+    // 1. Usuarios
+    // 2. Agendar Citas (btnAppointment - el que funciona)
+    // 3. Historia Clínica
+    // 4. Facturación y Pagos (btnBillingAndPayments)
+    // 5. Dueños
+    // 6. Mascotas
+    // 7. Reportes (btnReports)
+    // Total: 7 botones (antes tenías 9)
+    sideMenu.setLayout(new GridLayout(7, 1, 0, 15)); // Ajustar el número de filas
+    sideMenu.setBackground(new Color(245, 245, 245));
+    sideMenu.setPreferredSize(new Dimension(220, 0));
 
-        btnUsers = new JButton("Gestión de Usuarios");
-        btnAppointment = new JButton("Agendar Citas");
-        btnHistory = new JButton("Historia Clínica");
-        btnPayments = new JButton("Facturación y Pagos");
-        btnOwners = new JButton("Gestión de Dueños");
-        btnPets = new JButton("Gestión de Mascotas");
-        btnAgenda = new JButton("Agenda de Citas");
+    btnUsers = new JButton("Gestión de Usuarios");
+    btnAppointment = new JButton("Agendar Citas");
+    btnHistory = new JButton("Historia Clínica");
+    btnBillingAndPayments = new JButton("Facturación y Pagos"); 
+    btnOwners = new JButton("Gestión de Dueños");
+    btnPets = new JButton("Gestión de Mascotas");
+    btnReports = new JButton("Reportes");
+    // ELIMINAR ESTA LÍNEA si btnAgenda es el botón duplicado/extra
+    // private JButton btnAgenda; 
 
-        styleMenuButton(btnUsers);
-        styleMenuButton(btnAppointment);
-        styleMenuButton(btnHistory);
-        styleMenuButton(btnPayments);
-        styleMenuButton(btnOwners);
-        styleMenuButton(btnPets);
-        styleMenuButton(btnAgenda);
+    styleMenuButton(btnUsers);
+    styleMenuButton(btnAppointment);
+    styleMenuButton(btnHistory);
+    styleMenuButton(btnBillingAndPayments);
+    styleMenuButton(btnOwners);
+    styleMenuButton(btnPets);
+    styleMenuButton(btnReports);
+    // ELIMINAR ESTA LÍNEA si btnAgenda es el botón duplicado/extra
+    // styleMenuButton(btnAgenda);
 
-        sideMenu.add(btnUsers);
-        sideMenu.add(btnAppointment);
-        sideMenu.add(btnHistory);
-        sideMenu.add(btnPayments);
-        sideMenu.add(btnOwners);
-        sideMenu.add(btnPets);
-        
-    }
+    sideMenu.add(btnUsers);
+    sideMenu.add(btnAppointment);
+    sideMenu.add(btnHistory);
+    sideMenu.add(btnBillingAndPayments);
+    sideMenu.add(btnOwners);
+    sideMenu.add(btnPets);
+    sideMenu.add(btnReports);
+  
+    
+}
 
     private void createContentView() {
         contentView = new JPanel(new BorderLayout());
@@ -142,4 +159,6 @@ public class MainWindowView extends JFrame {
     public JButton getBtnPayments() { return btnPayments; }
     public JButton getBtnOwners() { return btnOwners; }
     public JButton getBtnPets() { return btnPets; }
+    public JButton getBtnReports() { return btnReports; } 
+    public JButton getBtnBillingAndPayments() { return btnBillingAndPayments; } 
 }

@@ -11,6 +11,7 @@ public class LoginController {
     
     private Consumer<User> onLoginSuccessCallback;
 
+
     public LoginController(LoginView vista, UserRepository userRepository, Consumer<User> onLoginSuccessCallback) {
         
         this.onLoginSuccessCallback = onLoginSuccessCallback;
@@ -30,6 +31,7 @@ public class LoginController {
 
             if (loginUser != null) {
                 vista.dispose();
+
                 onLoginSuccessCallback.accept(loginUser); 
                 
             } else {
