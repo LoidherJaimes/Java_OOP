@@ -72,87 +72,92 @@ public class App {
         }
 
         if (petRepository.getAllPets().isEmpty()) {
-            Pet pet1 = new Pet(
-                "Firulais",
-                "Perro",
-                "Labrador",
-                3,
-                Sex.MALE,
-                25,
-                "Muy juguetón",
-                Arrays.asList("Rabia", "Parvovirus"),
-                Collections.singletonList("Ninguna")
-            );
+    Pet pet1 = new Pet(
+        "Firulais",
+        "Perro",
+        "Labrador",
+        3,
+        Sex.MALE,
+        25,
+        "Muy juguetón",
+        Arrays.asList("Rabia", "Parvovirus"),
+        Collections.singletonList("Ninguna")
+    );
 
-            Pet pet2 = new Pet(
-                "Misu",
-                "Gato",
-                "Siames",
-                2,
-                Sex.FEMALE,
-                5,
-                "Le gusta dormir mucho",
-                Arrays.asList("Triple felina"),
-                Arrays.asList("Polvo")
-            );
+    Pet pet2 = new Pet(
+        "Misu",
+        "Gato",
+        "Siames",
+        2,
+        Sex.FEMALE,
+        5,
+        "Le gusta dormir mucho",
+        Arrays.asList("Triple felina"),
+        Arrays.asList("Polvo")
+    );
 
-            if (ownerRepository.getAllOwners().isEmpty()) {
-                Owner owner1 = new Owner("Juan Pérez", "555-1234", "Calle 10 #5-20");
-                Owner owner2 = new Owner("Ana Gómez", "555-5678", "Av. Principal 45");
-                ownerRepository.addOwner(owner1);
-                ownerRepository.addOwner(owner2);
-                
-                owner1.addPet(pet1);
-                owner2.addPet(pet2);
+    // Crear owners si no existen
+    if (ownerRepository.getAllOwners().isEmpty()) {
+        Owner owner1 = new Owner("Juan Pérez", "555-1234", "Calle 10 #5-20");
+        Owner owner2 = new Owner("Ana Gómez", "555-5678", "Av. Principal 45");
+        ownerRepository.addOwner(owner1);
+        ownerRepository.addOwner(owner2);
 
-                pet1.setOwner(owner1);
-                pet2.setOwner(owner2);
-            }
-            
+        owner1.addPet(pet1);
+        owner2.addPet(pet2);
 
-            petRepository.addPet(pet1);
-            petRepository.addPet(pet2);
-            
-            User vet1 = userRepository.getAllUsers().stream()
-                .filter(u -> u.getUsername().equals("Dr. García"))
-                .findFirst()
-                .orElse(null);
-                
-            User vet2 = userRepository.getAllUsers().stream()
-                .filter(u -> u.getUsername().equals("Dra. Martínez"))
-                .findFirst()
-                .orElse(null);
-            
-            if (vet1 != null && vet2 != null) {
-                Appointment appointment1 = new Appointment();
-                appointment1.setDateTime(LocalDateTime.now().plusDays(1).withHour(10).withMinute(0).withSecond(0).withNano(0));
-                appointment1.setPet(pet1);
-                appointment1.setDoctor(vet1);
-                appointment1.setReason("Vacunación anual y chequeo general");
-                appointment1.setStatus(AppointmentStatus.CONFIRMED);
-                appointment1.setDurationMinutes(30);
-                appointmentService.createAppointment(appointment1);
-                
-                Appointment appointment2 = new Appointment();
-                appointment2.setDateTime(LocalDateTime.now().plusDays(1).withHour(11).withMinute(0).withSecond(0).withNano(0));
-                appointment2.setPet(pet2);
-                appointment2.setDoctor(vet2);
-                appointment2.setReason("Control de peso y revisión de alergias");
-                appointment2.setStatus(AppointmentStatus.PENDING);
-                appointment2.setDurationMinutes(45);
-                appointmentService.createAppointment(appointment2);
-                
-                Appointment appointment3 = new Appointment();
-                appointment3.setDateTime(LocalDateTime.now().plusDays(3).withHour(15).withMinute(0).withSecond(0).withNano(0));
-                appointment3.setPet(pet1);
-                appointment3.setDoctor(vet1);
-                appointment3.setReason("Seguimiento post-vacunación");
-                appointment3.setStatus(AppointmentStatus.PENDING);
-                appointment3.setDurationMinutes(30);
-                appointmentService.createAppointment(appointment3);
-            }
-        }
+        pet1.setOwner(owner1);
+        pet2.setOwner(owner2);
     }
+
+    petRepository.addPet(pet1);
+    petRepository.addPet(pet2);
+
+    // 🔥 Obtener veterinarios reales creados arriba
+    User vet1 = userRepository.getAllUsers().stream()
+        .filter(u -> u.getUsername().equals("Dr"))
+        .findFirst()
+        .orElse(null);
+
+    User vet2 = userRepository.getAllUsers().stream()
+        .filter(u -> u.getUsername().equals("Dra. Martinez"))
+        .findFirst()
+        .orElse(null);
+
+    // Crear citas solo si los vets existen
+    if (vet1 != null && vet2 != null) {
+
+        Appointment appointment1 = new Appointment();
+        appointment1.setDateTime(LocalDateTime.now().plusDays(1).withHour(10).withMinute(0));
+        appointment1.setPet(pet1);
+        appointment1.setDoctor(vet1);
+        appointment1.setReason("Vacunación anual y chequeo general");
+        appointment1.setStatus(AppointmentStatus.CONFIRMED);
+        appointment1.setDurationMinutes(30);
+        appointmentService.createAppointment(appointment1);
+
+        Appointment appointment2 = new Appointment();
+        appointment2.setDateTime(LocalDateTime.now().plusDays(1).withHour(11).withMinute(0));
+        appointment2.setPet(pet2);
+        appointment2.setDoctor(vet2);
+        appointment2.setReason("Control de peso y revisión de alergias");
+        appointment2.setStatus(AppointmentStatus.PENDING);
+        appointment2.setDurationMinutes(45);
+        appointmentService.createAppointment(appointment2);
+
+        Appointment appointment3 = new Appointment();
+        appointment3.setDateTime(LocalDateTime.now().plusDays(3).withHour(15).withMinute(0));
+        appointment3.setPet(pet1);
+        appointment3.setDoctor(vet1);
+        appointment3.setReason("Seguimiento post-vacunación");
+        appointment3.setStatus(AppointmentStatus.PENDING);
+        appointment3.setDurationMinutes(30);
+        appointmentService.createAppointment(appointment3);
+    }
+}
+
+        }
+    
 
     public void startApplication() {
         if (loginView != null) {

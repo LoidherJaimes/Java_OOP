@@ -67,7 +67,7 @@ public class ReportsView extends JPanel {
         p2top.add(btnRefreshTop);
         p2.add(p2top, BorderLayout.NORTH);
 
-        mdlTopReasons = new DefaultTableModel(new Object[]{"Motivo / Especie", "Tipo", "Cantidad"}, 0);
+        mdlTopReasons = new DefaultTableModel(new Object[]{"motivo / Especie", "Tipo", "Cantidad"}, 0);
         tblTopReasons = new JTable(mdlTopReasons);
         p2.add(new JScrollPane(tblTopReasons), BorderLayout.CENTER);
 
