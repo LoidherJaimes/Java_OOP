@@ -12,12 +12,15 @@ public class MedicalOrder {
     private LocalDateTime requestedDate;
     private boolean completed;
     private String notes;
+    private Double price;
 
     public MedicalOrder() {
         this.id = UUID.randomUUID();
         this.requestedDate = LocalDateTime.now();
         this.completed = false;
         this.notes = "";
+        this.price = 0.0;
+
     }
 
     public MedicalOrder(UUID medicalAttentionId, OrderType orderType, String description) {
@@ -39,6 +42,8 @@ public class MedicalOrder {
         this.requestedDate = LocalDateTime.now();
         this.completed = false;
         this.notes = notes;
+        this.price = 0.0;
+
     }
 
     public MedicalOrder(UUID id, UUID medicalAttentionId, OrderType orderType,
@@ -51,6 +56,8 @@ public class MedicalOrder {
         this.requestedDate = requestedDate;
         this.completed = completed;
         this.notes = notes;
+        this.price = 0.0;
+
     }
 
     public UUID getId() {
@@ -166,5 +173,11 @@ public class MedicalOrder {
     @Override
     public int hashCode() {
         return id.hashCode();
+    }
+    public Double getPrice() {
+        return price;
+    }
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

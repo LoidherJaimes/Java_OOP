@@ -14,6 +14,7 @@ public class Appointment {
     private int durationMinutes;
     private UUID medicalAttentionId;
 
+
     // Empty constructor
     public Appointment() {
         this.id = UUID.randomUUID();

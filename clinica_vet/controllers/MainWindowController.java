@@ -3,14 +3,7 @@ package clinica_vet.controllers;
 import clinica_vet.model.entities.User;
 import clinica_vet.model.repositories.*;
 
-import clinica_vet.views.AppointmentsView;
-import clinica_vet.views.BillingAndPaymentsView;
-import clinica_vet.views.MainWindowView;
-import clinica_vet.views.ManageUsersView;
-import clinica_vet.views.MedicalHistoryView;
-import clinica_vet.views.OwnerManagementView;
-import clinica_vet.views.PetManagementView;
-import clinica_vet.views.ReportsView;
+import clinica_vet.views.*;
 
 import javax.swing.*;
 
@@ -24,23 +17,23 @@ public class MainWindowController {
     private final PetRepository petRepository;
     private final AppointmentService appointmentService;
     private final Runnable onLogoutAction;
-    
+
     private final MedicalAttentionRepository medicalAttentionRepository;
     private final TreatmentRepository treatmentRepository;
     private final MedicalOrderRepository medicalOrderRepository;
 
+    public MainWindowController(MainWindowView mainWindowView,
+                                User currentUser,
+                                UserRepository userRepository,
+                                IRolService rolService,
+                                OwnerRepository ownerRepository,
+                                PetRepository petRepository,
+                                AppointmentService appointmentService,
+                                MedicalAttentionRepository medicalAttentionRepository,
+                                TreatmentRepository treatmentRepository,
+                                MedicalOrderRepository medicalOrderRepository,
+                                Runnable onLogoutAction) {
 
-    public MainWindowController(MainWindowView mainWindowView, 
-                               User currentUser, 
-                               UserRepository userRepository, 
-                               IRolService rolService, 
-                               OwnerRepository ownerRepository, 
-                               PetRepository petRepository,
-                               AppointmentService appointmentService,
-                               MedicalAttentionRepository medicalAttentionRepository, 
-                               TreatmentRepository treatmentRepository,               
-                               MedicalOrderRepository medicalOrderRepository,         
-                               Runnable onLogoutAction) {
         this.mainWindowView = mainWindowView;
         this.currentUser = currentUser;
         this.userRepository = userRepository;
@@ -50,131 +43,132 @@ public class MainWindowController {
         this.appointmentService = appointmentService;
         this.medicalAttentionRepository = medicalAttentionRepository;
         this.onLogoutAction = onLogoutAction;
-        this.treatmentRepository = new TreatmentRepository();
-        this.medicalOrderRepository = new MedicalOrderRepository();
-        
+
+        // NO CREES nuevos repos, usa los que llegan por el constructor
+        this.treatmentRepository = treatmentRepository;
+        this.medicalOrderRepository = medicalOrderRepository;
+
         setupListeners();
         configureMenuByRole();
         mainWindowView.setContent(mainWindowView.getWelcomeView());
     }
-    
-// Dentro de MainWindowController.java
 
-// En MainWindowController.java
 
-private void configureMenuByRole() {
-    boolean isAdmin = currentUser.getRol() != null && 
-                      currentUser.getRol().getName().equalsIgnoreCase("Administrador");
-    boolean isVeterinarian = currentUser.getRol() != null && 
-                             currentUser.getRol().getName().equalsIgnoreCase("Veterinario");
-    boolean isAuxiliary = currentUser.getRol() != null && 
-                          currentUser.getRol().getName().equalsIgnoreCase("Auxiliar");
-    
-    // Visibilidad por Rol
-    mainWindowView.getBtnUsers().setVisible(isAdmin);
-    
-    // Botón de Historia Clínica (Visible para Veterinario O Administrador)
-    if (mainWindowView.getBtnHistory() != null) {
-        mainWindowView.getBtnHistory().setVisible(isVeterinarian || isAdmin); 
+    private void configureMenuByRole() {
+        boolean isAdmin = currentUser.getRol() != null &&
+                currentUser.getRol().getName().equalsIgnoreCase("Administrador");
+        boolean isVeterinarian = currentUser.getRol() != null &&
+                currentUser.getRol().getName().equalsIgnoreCase("Veterinario");
+        boolean isAuxiliary = currentUser.getRol() != null &&
+                currentUser.getRol().getName().equalsIgnoreCase("Auxiliar");
+
+        mainWindowView.getBtnUsers().setVisible(isAdmin);
+
+        if (mainWindowView.getBtnHistory() != null) {
+            mainWindowView.getBtnHistory().setVisible(isVeterinarian || isAdmin);
+        }
+
+        if (mainWindowView.getBtnBillingAndPayments() != null) {
+            mainWindowView.getBtnBillingAndPayments().setVisible(isAuxiliary || isAdmin);
+        }
+
+        // Reportes visible para todos, no hay filtros
     }
-    
-    // Botón de Facturación y Pagos (Visible para Auxiliar O Administrador)
-    if (mainWindowView.getBtnBillingAndPayments() != null) {
-        // CORRECCIÓN CLAVE: Agregamos 'isAdmin' con el OR lógico (||)
-        mainWindowView.getBtnBillingAndPayments().setVisible(isAuxiliary || isAdmin); 
-    }
-    
-    // Botón de Reportes (Visible para todos)
-}
+
 
     private void setupListeners() {
-    this.mainWindowView.getBtnLogout().addActionListener(e -> onLogoutAction.run());
 
-    this.mainWindowView.getBtnUsers().addActionListener(e -> loadUserManagementView());
+        this.mainWindowView.getBtnLogout().addActionListener(e -> onLogoutAction.run());
 
-    this.mainWindowView.getBtnOwners().addActionListener(e -> loadOwnerManagementView());
+        this.mainWindowView.getBtnUsers().addActionListener(e -> loadUserManagementView());
+        this.mainWindowView.getBtnOwners().addActionListener(e -> loadOwnerManagementView());
+        this.mainWindowView.getBtnPets().addActionListener(e -> loadPetManagementView());
+        this.mainWindowView.getBtnAppointment().addActionListener(e -> loadAppointmentsView());
 
-    this.mainWindowView.getBtnPets().addActionListener(e -> loadPetManagementView());
-    
-    this.mainWindowView.getBtnAppointment().addActionListener(e -> loadAppointmentsView());
-    
-    // Nuevo Listener para Reportes (Visible para todos)
-    if (this.mainWindowView.getBtnReports() != null) {
-        this.mainWindowView.getBtnReports().addActionListener(e -> loadReportsView()); 
+        if (this.mainWindowView.getBtnReports() != null) {
+            this.mainWindowView.getBtnReports().addActionListener(e -> loadReportsView());
+        }
+
+        if (this.mainWindowView.getBtnBillingAndPayments() != null) {
+            this.mainWindowView.getBtnBillingAndPayments().addActionListener(e -> loadBillingAndPaymentsView());
+        }
+
+        if (this.mainWindowView.getBtnHistory() != null) {
+            this.mainWindowView.getBtnHistory().addActionListener(e -> loadMedicalHistoryView());
+        }
     }
-    
-    // Nuevo Listener para Facturación y Pagos (Solo Auxiliar)
-    if (this.mainWindowView.getBtnBillingAndPayments() != null) {
-        this.mainWindowView.getBtnBillingAndPayments().addActionListener(e -> loadBillingAndPaymentsView()); 
-    }
-    
-    if (this.mainWindowView.getBtnHistory() != null) {
-        this.mainWindowView.getBtnHistory().addActionListener(e -> loadMedicalHistoryView());
-    }
-}
-    
+
+
     private void loadUserManagementView() {
         ManageUsersView manageUsersView = new ManageUsersView();
-        ManageUsersController manageUsersController = new ManageUsersController(manageUsersView, userRepository, rolService, mainWindowView); 
+        new ManageUsersController(manageUsersView, userRepository, rolService, mainWindowView);
         mainWindowView.setContent(manageUsersView);
     }
-    
+
     private void loadOwnerManagementView() {
-        OwnerManagementView ownerManagementView = new OwnerManagementView();
-        OwnerManagementController ownerManagementController = new OwnerManagementController(ownerManagementView, ownerRepository, mainWindowView);
-        mainWindowView.setContent(ownerManagementView);
+        OwnerManagementView view = new OwnerManagementView();
+        new OwnerManagementController(view, ownerRepository, mainWindowView);
+        mainWindowView.setContent(view);
     }
-    
+
     private void loadPetManagementView() {
-        PetManagementView petManagementView = new PetManagementView();
-        PetController petController = new PetController(petManagementView, petRepository, ownerRepository, mainWindowView);
-        mainWindowView.setContent(petManagementView);
+        PetManagementView view = new PetManagementView();
+        new PetController(view, petRepository, ownerRepository, mainWindowView);
+        mainWindowView.setContent(view);
     }
-    
+
     private void loadAppointmentsView() {
-        AppointmentsView appointmentsView = new AppointmentsView();
-        AppointmentsController appointmentsController = new AppointmentsController(
-            appointmentsView,
-            appointmentService,
-            petRepository,
-            userRepository,
-            (JFrame) SwingUtilities.getWindowAncestor(mainWindowView),
-            medicalAttentionRepository,  
-            treatmentRepository,         
-            medicalOrderRepository,      
-            mainWindowView,              
-            currentUser                  
+        AppointmentsView view = new AppointmentsView();
+        new AppointmentsController(
+                view,
+                appointmentService,
+                petRepository,
+                userRepository,
+                (JFrame) SwingUtilities.getWindowAncestor(mainWindowView),
+                medicalAttentionRepository,
+                treatmentRepository,
+                medicalOrderRepository,
+                mainWindowView,
+                currentUser
         );
-        mainWindowView.setContent(appointmentsView);
+        mainWindowView.setContent(view);
     }
-    
+
     private void loadMedicalHistoryView() {
-        MedicalHistoryView historyView = new MedicalHistoryView();
-        MedicalHistoryController historyController = new MedicalHistoryController(
-            historyView,
-            mainWindowView,
-            medicalAttentionRepository,
-            treatmentRepository,
-            medicalOrderRepository,
-            petRepository,
-            userRepository
+        MedicalHistoryView v = new MedicalHistoryView();
+        new MedicalHistoryController(
+                v,
+                mainWindowView,
+                medicalAttentionRepository,
+                treatmentRepository,
+                medicalOrderRepository,
+                petRepository,
+                userRepository
         );
-        mainWindowView.setContent(historyView);
+        mainWindowView.setContent(v);
     }
-    // AGREGAR ESTOS MÉTODOS A MainWindowController.java
 
-private void loadReportsView() {
-    ReportsView reportsView = new ReportsView();
-    // Pasa los repositorios que el ReportsController necesite.
-    // Aquí solo se pasa la vista principal por ahora.
-    ReportsController reportsController = new ReportsController(reportsView, mainWindowView); 
-    mainWindowView.setContent(reportsView);
-}
 
-private void loadBillingAndPaymentsView() {
-    BillingAndPaymentsView billingAndPaymentsView = new BillingAndPaymentsView();
-    // Pasa los repositorios que el BillingAndPaymentsController necesite.
-    BillingAndPaymentsController billingAndPaymentsController = new BillingAndPaymentsController(billingAndPaymentsView, mainWindowView);
-    mainWindowView.setContent(billingAndPaymentsView);
-}
+    // ✅ AQUÍ ESTÁ LA CORRECCIÓN PARA REPORTES
+    private void loadReportsView() {
+        ReportsView view = new ReportsView();
+
+        ReportsController controller = new ReportsController(
+                view,
+                mainWindowView,
+                appointmentService,
+                petRepository,
+                medicalOrderRepository,
+                medicalAttentionRepository
+        );
+
+        mainWindowView.setContent(view);
+    }
+
+
+    private void loadBillingAndPaymentsView() {
+        BillingAndPaymentsView view = new BillingAndPaymentsView();
+        new BillingAndPaymentsController(view, mainWindowView);
+        mainWindowView.setContent(view);
+    }
 }
