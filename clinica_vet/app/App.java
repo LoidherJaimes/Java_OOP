@@ -121,7 +121,7 @@ public class App {
 
     // 🔥 Obtener veterinarios reales creados arriba
     User vet1 = userRepository.getAllUsers().stream()
-        .filter(u -> u.getUsername().equals("Dr"))
+        .filter(u -> u.getUsername().equals("Dr. Garcia"))
         .findFirst()
         .orElse(null);
 
