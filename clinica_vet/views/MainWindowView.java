@@ -74,7 +74,7 @@ public class MainWindowView extends JFrame {
         btnUsers = new JButton("Gestión de Usuarios");
         btnAppointment = new JButton("Agendar Citas");
         btnHistory = new JButton("Historia Clínica");
-        btnBillingAndPayments = new JButton("💳 Facturación y Pagos");
+        btnBillingAndPayments = new JButton("Facturación y Pagos");
         btnOwners = new JButton("Gestión de Dueños");
         btnPets = new JButton("Gestión de Mascotas");
         btnReports = new JButton("Reportes");
