@@ -61,9 +61,19 @@ public class MainWindowController {
     }
 
     private void configureMenuByRole() {
-        boolean isAdmin = currentUser.getRol().getName().equalsIgnoreCase("Administrador");
-        boolean isAux = currentUser.getRol().getName().equalsIgnoreCase("Auxiliar");
-
+        String rolName = currentUser.getRol().getName();
+        boolean isAdmin = rolName.equalsIgnoreCase("Administrador");
+        boolean isAux = rolName.equalsIgnoreCase("Auxiliar");
+        boolean isMedico = rolName.equalsIgnoreCase("Medico");
+    
+        if (mainWindowView.getBtnUsers() != null) {
+            mainWindowView.getBtnUsers().setVisible(isAdmin);
+        }
+    
+        if (mainWindowView.getBtnHistory() != null) {
+            mainWindowView.getBtnHistory().setVisible(isMedico);
+        }
+    
         if (mainWindowView.getBtnBillingAndPayments() != null) {
             mainWindowView.getBtnBillingAndPayments().setVisible(isAdmin || isAux);
         }
@@ -83,7 +93,6 @@ public class MainWindowController {
         if (mainWindowView.getBtnHistory() != null)
             mainWindowView.getBtnHistory().addActionListener(e -> loadMedicalHistoryView());
             
-        // NUEVO: Agregar listener para Facturación y Pagos
         if (mainWindowView.getBtnBillingAndPayments() != null) {
             mainWindowView.getBtnBillingAndPayments().addActionListener(e -> loadBillingAndPaymentsView());
         }
@@ -146,7 +155,6 @@ public class MainWindowController {
         mainWindowView.setContent(v);
     }
     
-    // NUEVO MÉTODO: Cargar módulo de Facturación y Pagos
     private void loadBillingAndPaymentsView() {
         BillingAndPaymentsView v = new BillingAndPaymentsView();
         new BillingAndPaymentsController(
