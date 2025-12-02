@@ -149,7 +149,7 @@ public class MainWindowController {
     }
 
 
-    // ✅ AQUÍ ESTÁ LA CORRECCIÓN PARA REPORTES
+
     private void loadReportsView() {
         ReportsView view = new ReportsView();
 

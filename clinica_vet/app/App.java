@@ -25,6 +25,8 @@ public class App {
     private PetRepository petRepository;
     private IAppointmentRepository appointmentRepository;
     private AppointmentService appointmentService;
+
+
     
     private MedicalAttentionRepository medicalAttentionRepository;
     private TreatmentRepository treatmentRepository;
@@ -40,6 +42,7 @@ public class App {
         this.petRepository = new PetRepository();
         this.appointmentRepository = new AppointmentRepository();
         this.appointmentService = new AppointmentService(appointmentRepository);
+
         
         this.medicalAttentionRepository = new MedicalAttentionRepository();
         this.treatmentRepository = new TreatmentRepository();

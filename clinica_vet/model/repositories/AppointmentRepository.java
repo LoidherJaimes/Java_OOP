@@ -122,4 +122,6 @@ public class AppointmentRepository implements IAppointmentRepository {
         LocalDateTime weekEnd = startOfWeek.plusDays(7).atStartOfDay();
         return getAppointmentsByDateRange(weekStart, weekEnd);
     }
+
+    
 }
