@@ -68,7 +68,7 @@ public class App {
             
             User admin = new User("admin", "1", rolAdmin);
             User aux = new User("aux", "1", rolAux);
-            User vet1 = new User("Dr", "1", rolVet);
+            User vet1 = new User("Dr. Garcia", "1", rolVet);
             User vet2 = new User("Dra. Martinez", "1", rolVet);
             
             userRepository.addUser(admin);
@@ -102,7 +102,6 @@ public class App {
         Arrays.asList("Polvo")
     );
 
-    // Crear owners si no existen
     if (ownerRepository.getAllOwners().isEmpty()) {
         Owner owner1 = new Owner("Juan Pérez", "555-1234", "Calle 10 #5-20");
         Owner owner2 = new Owner("Ana Gómez", "555-5678", "Av. Principal 45");
@@ -119,7 +118,6 @@ public class App {
     petRepository.addPet(pet1);
     petRepository.addPet(pet2);
 
-    // 🔥 Obtener veterinarios reales creados arriba
     User vet1 = userRepository.getAllUsers().stream()
         .filter(u -> u.getUsername().equals("Dr. Garcia"))
         .findFirst()
@@ -130,7 +128,6 @@ public class App {
         .findFirst()
         .orElse(null);
 
-    // Crear citas solo si los vets existen
     if (vet1 != null && vet2 != null) {
 
         Appointment appointment1 = new Appointment();
