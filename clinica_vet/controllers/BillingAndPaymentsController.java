@@ -224,11 +224,11 @@ public class BillingAndPaymentsController {
             Invoice invoice = invoiceService.createInvoice(owner, itemsToInvoice);
             
             JOptionPane.showMessageDialog(view, 
-                "✅ Factura #" + invoice.getId() + " creada exitosamente\n" +
-                "📅 Fecha: " + invoice.getDate() + "\n" +
-                "👤 Cliente: " + invoice.getOwner().getName() + "\n" +
-                "💰 Total: $" + String.format("%.2f", invoice.getTotal()) + "\n" +
-                "📊 Estado: " + invoice.getStatus(),
+                "Factura #" + invoice.getId() + " creada exitosamente\n" +
+                "Fecha: " + invoice.getDate() + "\n" +
+                "Cliente: " + invoice.getOwner().getName() + "\n" +
+                "Total: $" + String.format("%.2f", invoice.getTotal()) + "\n" +
+                "Estado: " + invoice.getStatus(),
                 "Factura Generada",
                 JOptionPane.INFORMATION_MESSAGE);
             
