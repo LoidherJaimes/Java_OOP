@@ -61,51 +61,93 @@ public class MainWindowView extends JFrame {
         topBar.add(rightPanel, BorderLayout.EAST);
     }
 
-private void createSideMenu() {
-    sideMenu = new JPanel();
-    // Ajusta el número de filas del GridLayout. Contemos:
-    // 1. Usuarios
-    // 2. Agendar Citas (btnAppointment - el que funciona)
-    // 3. Historia Clínica
-    // 4. Facturación y Pagos (btnBillingAndPayments)
-    // 5. Dueños
-    // 6. Mascotas
-    // 7. Reportes (btnReports)
-    // Total: 7 botones (antes tenías 9)
-    sideMenu.setLayout(new GridLayout(7, 1, 0, 15)); // Ajustar el número de filas
-    sideMenu.setBackground(new Color(245, 245, 245));
-    sideMenu.setPreferredSize(new Dimension(220, 0));
+    private void createSideMenu() {
+        sideMenu = new JPanel();
+        // Usamos BoxLayout para mejor control
+        sideMenu.setLayout(new BoxLayout(sideMenu, BoxLayout.Y_AXIS));
+        sideMenu.setBackground(new Color(245, 245, 245));
+        sideMenu.setPreferredSize(new Dimension(220, 0));
+        
+        // Agregar un poco de espacio en la parte superior
+        sideMenu.add(Box.createRigidArea(new Dimension(0, 20)));
 
-    btnUsers = new JButton("Gestión de Usuarios");
-    btnAppointment = new JButton("Agendar Citas");
-    btnHistory = new JButton("Historia Clínica");
-    btnBillingAndPayments = new JButton("Facturación y Pagos"); 
-    btnOwners = new JButton("Gestión de Dueños");
-    btnPets = new JButton("Gestión de Mascotas");
-    btnReports = new JButton("Reportes");
-    // ELIMINAR ESTA LÍNEA si btnAgenda es el botón duplicado/extra
-    // private JButton btnAgenda; 
+        btnUsers = new JButton("Gestión de Usuarios");
+        btnAppointment = new JButton("Agendar Citas");
+        btnHistory = new JButton("Historia Clínica");
+        btnBillingAndPayments = new JButton("💳 Facturación y Pagos");
+        btnOwners = new JButton("Gestión de Dueños");
+        btnPets = new JButton("Gestión de Mascotas");
+        btnReports = new JButton("Reportes");
 
-    styleMenuButton(btnUsers);
-    styleMenuButton(btnAppointment);
-    styleMenuButton(btnHistory);
-    styleMenuButton(btnBillingAndPayments);
-    styleMenuButton(btnOwners);
-    styleMenuButton(btnPets);
-    styleMenuButton(btnReports);
-    // ELIMINAR ESTA LÍNEA si btnAgenda es el botón duplicado/extra
-    // styleMenuButton(btnAgenda);
+        // Estilizar botones
+        styleMenuButton(btnUsers);
+        styleMenuButton(btnAppointment);
+        styleMenuButton(btnHistory);
+        styleMenuButton(btnBillingAndPayments);
+        styleMenuButton(btnOwners);
+        styleMenuButton(btnPets);
+        styleMenuButton(btnReports);
 
-    sideMenu.add(btnUsers);
-    sideMenu.add(btnAppointment);
-    sideMenu.add(btnHistory);
-    sideMenu.add(btnBillingAndPayments);
-    sideMenu.add(btnOwners);
-    sideMenu.add(btnPets);
-    sideMenu.add(btnReports);
-  
+        // Hacer que los botones se expandan horizontalmente
+        Dimension buttonSize = new Dimension(200, 45);
+        btnUsers.setPreferredSize(buttonSize);
+        btnUsers.setMaximumSize(buttonSize);
+        btnUsers.setMinimumSize(buttonSize);
+        
+        btnAppointment.setPreferredSize(buttonSize);
+        btnAppointment.setMaximumSize(buttonSize);
+        btnAppointment.setMinimumSize(buttonSize);
+        
+        btnHistory.setPreferredSize(buttonSize);
+        btnHistory.setMaximumSize(buttonSize);
+        btnHistory.setMinimumSize(buttonSize);
+        
+        btnBillingAndPayments.setPreferredSize(buttonSize);
+        btnBillingAndPayments.setMaximumSize(buttonSize);
+        btnBillingAndPayments.setMinimumSize(buttonSize);
+        
+        btnOwners.setPreferredSize(buttonSize);
+        btnOwners.setMaximumSize(buttonSize);
+        btnOwners.setMinimumSize(buttonSize);
+        
+        btnPets.setPreferredSize(buttonSize);
+        btnPets.setMaximumSize(buttonSize);
+        btnPets.setMinimumSize(buttonSize);
+        
+        btnReports.setPreferredSize(buttonSize);
+        btnReports.setMaximumSize(buttonSize);
+        btnReports.setMinimumSize(buttonSize);
+
+        // Agregar botones con espacio entre ellos
+        JPanel btnUsersPanel = createButtonPanel(btnUsers);
+        JPanel btnAppointmentPanel = createButtonPanel(btnAppointment);
+        JPanel btnHistoryPanel = createButtonPanel(btnHistory);
+        JPanel btnBillingPanel = createButtonPanel(btnBillingAndPayments);
+        JPanel btnOwnersPanel = createButtonPanel(btnOwners);
+        JPanel btnPetsPanel = createButtonPanel(btnPets);
+        JPanel btnReportsPanel = createButtonPanel(btnReports);
+
+        sideMenu.add(btnUsersPanel);
+        sideMenu.add(Box.createRigidArea(new Dimension(0, 10)));
+        sideMenu.add(btnAppointmentPanel);
+        sideMenu.add(Box.createRigidArea(new Dimension(0, 10)));
+        sideMenu.add(btnHistoryPanel);
+        sideMenu.add(Box.createRigidArea(new Dimension(0, 10)));
+        sideMenu.add(btnBillingPanel);
+        sideMenu.add(Box.createRigidArea(new Dimension(0, 10)));
+        sideMenu.add(btnOwnersPanel);
+        sideMenu.add(Box.createRigidArea(new Dimension(0, 10)));
+        sideMenu.add(btnPetsPanel);
+        sideMenu.add(Box.createRigidArea(new Dimension(0, 10)));
+        sideMenu.add(btnReportsPanel);
+    }
     
-}
+    private JPanel createButtonPanel(JButton button) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        panel.setBackground(new Color(245, 245, 245));
+        panel.add(button);
+        return panel;
+    }
 
     private void createContentView() {
         contentView = new JPanel(new BorderLayout());
@@ -133,6 +175,8 @@ private void createSideMenu() {
         button.setFocusPainted(false);
         button.setHorizontalAlignment(SwingConstants.LEFT);
         button.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        // Hacer que el texto se alinee a la izquierda
+        button.setAlignmentX(Component.LEFT_ALIGNMENT);
     }
 
     public void setContent(JPanel newContent) {
@@ -160,9 +204,5 @@ private void createSideMenu() {
     public JButton getBtnOwners() { return btnOwners; }
     public JButton getBtnPets() { return btnPets; }
     public JButton getBtnReports() { return btnReports; } 
-    public JButton getBtnBillingAndPayments() { return btnBillingAndPayments; } 
-
-
-
-
+    public JButton getBtnBillingAndPayments() { return btnBillingAndPayments; }
 }

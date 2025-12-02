@@ -26,11 +26,12 @@ public class App {
     private IAppointmentRepository appointmentRepository;
     private AppointmentService appointmentService;
 
-
-    
     private MedicalAttentionRepository medicalAttentionRepository;
     private TreatmentRepository treatmentRepository;
     private MedicalOrderRepository medicalOrderRepository;
+    
+    private InvoiceRepository invoiceRepository;
+    private InvoiceService invoiceService; // <<< NUEVO: Declaración del Service
     
     private LoginView loginView;
 
@@ -42,8 +43,10 @@ public class App {
         this.petRepository = new PetRepository();
         this.appointmentRepository = new AppointmentRepository();
         this.appointmentService = new AppointmentService(appointmentRepository);
-
         
+        this.invoiceRepository = new InvoiceRepository();
+        this.invoiceService = new InvoiceService(invoiceRepository); // <<< CORRECCIÓN: Inicializar Service
+
         this.medicalAttentionRepository = new MedicalAttentionRepository();
         this.treatmentRepository = new TreatmentRepository();
         this.medicalOrderRepository = new MedicalOrderRepository();
@@ -156,12 +159,9 @@ public class App {
         appointment3.setStatus(AppointmentStatus.PENDING);
         appointment3.setDurationMinutes(30);
         appointmentService.createAppointment(appointment3);
-    }
+    }}
 }
-
-        }
     
-
     public void startApplication() {
         if (loginView != null) {
             loginView.dispose();
@@ -188,7 +188,8 @@ public class App {
             appointmentService,
             medicalAttentionRepository,  
             treatmentRepository,         
-            medicalOrderRepository,      
+            medicalOrderRepository,
+            invoiceService, // <<< CORRECCIÓN: Pasar el InvoiceService
             onLogoutAction
         ); 
         

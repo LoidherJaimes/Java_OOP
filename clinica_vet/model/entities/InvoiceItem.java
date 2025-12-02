@@ -29,4 +29,10 @@ public class InvoiceItem {
     public double getSubtotal() {
         return subtotal;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("%s x%d @ $%.2f = $%.2f", 
+            name, quantity, price, subtotal);
+    }
 }
